@@ -1,0 +1,36 @@
+{
+  "name": "dusanmalusev",
+  "version": "1.0.0",
+  "description": "My Personal website",
+  "main": "client/index.js",
+  "scripts": {
+    "dev": "cross-env NODE_ENV=development parcel client/index.ts",
+    "watch": "cross-env NODE_ENV=development parcel watch client/index.ts",
+    "prod": "cross-env NODE_ENV=production parcel build client/index.ts --no-source-maps"
+  },
+  "author": "Dusan Malusev",
+  "license": "MIT",
+  "dependencies": {
+    "@sweetalert2/theme-dark": "^4.0.1",
+    "autoprefixer": "^10.1.0",
+    "css.gg": "^2.0.0",
+    "parcel": "^2.0.0-rc.0",
+    "postcss-modules": "^4.0.0",
+    "sweetalert2": "^10.13.0",
+    "tailwindcss": "^2.0.2",
+    "tsparticles": "^1.18.11",
+    "yup": "^0.32.8"
+  },
+  "devDependencies": {
+    "@types/yup": "^0.29.11",
+    "cross-env": "^7.0.3",
+    "postcss": "^8.2.1",
+    "postcss-preset-env": "^6.7.0",
+    "typescript": "^4.4.3"
+  },
+  "targets": {
+    "default": {
+      "distDir": "./wwwroot/dist"
+    }
+  }
+}

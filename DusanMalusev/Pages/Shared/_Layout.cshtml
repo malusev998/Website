@@ -1,0 +1,60 @@
+﻿@{
+    var title = ViewData["Title"];
+    var keywords = ViewData["Keywords"] ?? "developer,dusan,dusan malusev,software,web developer,backend software developer,backend";
+    var description = ViewData["Description"] ?? "Backend software engineer from Serbia with relevant experience in building various backend systems";
+    var ogUrl = ViewData["OgUrl"];
+    var ogImage = ViewData["OgImage"] ?? "~/img/malusev.png";
+    var url = ViewData["Url"] ?? "https://www.dusanmalusev.dev";
+}
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charSet="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+
+    <title>@ViewData["Title"]</title>
+    <meta name="keywords" content="@keywords" />
+    <meta name="description" content="@description" />
+    <meta name="twitter:card" content="@description" />
+    <meta name="twitter:site" content="" />
+    <meta name="twitter:title" content="@title" />
+    <meta name="twitter:description" content="@description" />
+    <meta name="twitter:creator" content="" />
+    <meta name="twitter:image" content="@ogImage" />
+    <meta property="og:title" content="@title" />
+    <meta property="og:url" content="@url" />
+    <meta property="og:image" content="@ogImage" />
+    <meta property="og:description" content="@description" />
+    <meta property="og:site_name" content="Dusan Malusev's Website" />
+
+    <link rel="stylesheet" href="~/dist/index.css" asp-append-version="true" />
+</head>
+
+<body class="relative min-h-screen text-white bg-main-dark-900">
+    <section class="flex">
+        <partial name="_Sidebar" />
+        <aside class="h-screen z-1 bg-transparent hidden 2xl:w-1/6 2xl:flex mr-10"></aside>
+        <main class="w-full min-h-screen">
+            <div class="flex w-full h-full">
+                @RenderBody()
+            </div>
+        </main>
+    </section>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-187169857-1"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'UA-187169857-1');
+
+        dataLayer.push({pageTitle: '@title'})
+    </script>
+
+    <script src="~/dist/index.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+
+</html>
