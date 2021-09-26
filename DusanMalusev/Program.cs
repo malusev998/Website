@@ -1,46 +1,81 @@
+using Serilog;
+using Serilog.Events;
+using Serilog.Formatting.Compact;
+
+Log.Logger = new LoggerConfiguration()
+    .MinimumLevel.Override("Microsoft", LogEventLevel.Information)
+    .MinimumLevel.Override("Microsoft.AspNetCore", LogEventLevel.Warning)
+    .Enrich.FromLogContext()
+    .WriteTo.Console()
+    .CreateBootstrapLogger();
+
 var builder = WebApplication.CreateBuilder(args);
 
-
-builder.WebHost.UseKestrel(options =>
+try
 {
-    options.AllowSynchronousIO = false;
-    options.DisableStringReuse = false;
-    options.AddServerHeader = false;
-});
+    builder.Host.UseSerilog((context, services, configuration) => configuration
+        .ReadFrom.Configuration(context.Configuration)
+        .ReadFrom.Services(services)
+        .Enrich.FromLogContext()
+        .WriteTo.Console()
+    );
+    builder.Host.UseConsoleLifetime();
 
-builder.Host.ConfigureHostConfiguration(host =>
-{
-    host.AddEnvironmentVariables(env =>
+
+    builder.WebHost.UseKestrel(options =>
     {
-        env.Prefix = "MALUSEV";
+        options.AllowSynchronousIO = false;
+        options.DisableStringReuse = false;
+        options.AddServerHeader = false;
     });
-});
 
-// Add services to the container.
-builder.Services.AddRazorPages();
+    builder.Host.ConfigureHostConfiguration(host =>
+    {
+        host.AddEnvironmentVariables(env =>
+        {
+            env.Prefix = "MALUSEV";
+        });
+    });
 
-builder.Services.AddControllers();
+    // Add services to the container.
+    builder.Services.AddRazorPages();
+
+    builder.Services.AddControllers();
 
 
+    var app = builder.Build();
 
-var app = builder.Build();
 
+    // Configure the HTTP request pipeline.
+    if (!app.Environment.IsDevelopment())
+    {
+        app.UseExceptionHandler("/Error");
+        app.UseHsts();
+    }
 
-// Configure the HTTP request pipeline.
-if (!app.Environment.IsDevelopment())
-{
-    app.UseExceptionHandler("/Error");
-    app.UseHsts();
+    if (app.Environment.IsDevelopment())
+    {
+        app.UseDeveloperExceptionPage();
+        app.UseSerilogRequestLogging();
+    }
+
+    app.UseHttpsRedirection();
+    app.UseStaticFiles();
+
+    app.UseRouting();
+
+    app.UseAuthorization();
+
+    app.MapRazorPages();
+    app.MapControllers();
+
+    await app.RunAsync();
 }
-
-app.UseHttpsRedirection();
-app.UseStaticFiles();
-
-app.UseRouting();
-
-app.UseAuthorization();
-
-app.MapRazorPages();
-app.MapControllers();
-
-app.Run();
+catch (Exception e)
+{
+    Log.Fatal(e, "Host terminated unexpectedly");
+}
+finally
+{
+    Log.CloseAndFlush();
+}

@@ -1,4 +1,4 @@
 node_modules/
 client/**/*.js
 client/**/*.map
-
+Logs/*.jsonl
