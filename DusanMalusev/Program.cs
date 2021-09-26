@@ -4,6 +4,7 @@ using Validators;
 using Handlers;
 using Serilog;
 using Serilog.Events;
+using NodaTime;
 
 Log.Logger = new LoggerConfiguration()
     .MinimumLevel.Override("Microsoft", LogEventLevel.Information)
@@ -47,7 +48,9 @@ try
     builder.Services.AddRazorPages();
 
     builder.Services.AddControllers();
-        
+
+    builder.Services.AddSingleton<IClock>(p => SystemClock.Instance);
+
     builder.Services.AddDatabase(
        builder.Configuration.GetConnectionString(Database.ServiceProvider.ConnectionStringKey),
        builder.Configuration.GetValue<bool>("Postgres:Development"),
