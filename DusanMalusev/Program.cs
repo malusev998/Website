@@ -1,6 +1,9 @@
+using Database;
+using Repositories;
+using Validators;
+using Handlers;
 using Serilog;
 using Serilog.Events;
-using Serilog.Formatting.Compact;
 
 Log.Logger = new LoggerConfiguration()
     .MinimumLevel.Override("Microsoft", LogEventLevel.Information)
@@ -19,6 +22,7 @@ try
         .Enrich.FromLogContext()
         .WriteTo.Console()
     );
+
     builder.Host.UseConsoleLifetime();
 
 
@@ -37,11 +41,23 @@ try
         });
     });
 
+    
+
     // Add services to the container.
     builder.Services.AddRazorPages();
 
     builder.Services.AddControllers();
+        
+    builder.Services.AddDatabase(
+       builder.Configuration.GetConnectionString(Database.ServiceProvider.ConnectionStringKey),
+       builder.Configuration.GetValue<bool>("Postgres:Development"),
+       minBatchSize: builder.Configuration.GetValue<int>("Postgres:MinBatchSize"),
+       maxBatchSize: builder.Configuration.GetValue<int>("Postgres:MaxBatchSize")
+   ).AddRepositories();
 
+    builder.Services
+        .AddValidators()
+        .AddMediatr();
 
     var app = builder.Build();
 
