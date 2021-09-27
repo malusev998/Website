@@ -16,6 +16,7 @@ namespace DusanMalusev.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> MessageMe([FromBody] CreateContact.Request createContact)
         {
             var response = await _sender.Send(createContact);

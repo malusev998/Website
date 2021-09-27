@@ -5,6 +5,9 @@ using Handlers;
 using Serilog;
 using Serilog.Events;
 using NodaTime;
+using DusanMalusev.Exceptions;
+using DusanMalusev.Middleware;
+using DusanMalusev.Options;
 
 Log.Logger = new LoggerConfiguration()
     .MinimumLevel.Override("Microsoft", LogEventLevel.Information)
@@ -42,12 +45,17 @@ try
         });
     });
 
-    
+
 
     // Add services to the container.
     builder.Services.AddRazorPages();
 
-    builder.Services.AddControllers();
+    builder.Services.AddControllers((options) =>
+    {
+        options.Filters.Add<Handler>();
+    });
+
+    builder.Services.AddOptions<CsrfCookie>("CsrfCookieOptions");
 
     builder.Services.AddSingleton<IClock>(p => SystemClock.Instance);
 
@@ -61,6 +69,13 @@ try
     builder.Services
         .AddValidators()
         .AddMediatr();
+
+    builder.Services.AddAntiforgery(options =>
+    {
+        options.SuppressXFrameOptionsHeader = false;
+        options.HeaderName = "X-CSRF-TOKEN";
+        options.FormFieldName = "_csrf_token";
+    });
 
     var app = builder.Build();
 
@@ -77,6 +92,8 @@ try
         app.UseDeveloperExceptionPage();
         app.UseSerilogRequestLogging();
     }
+
+    app.UseMiddleware<CsrfMiddleware>();
 
     app.UseHttpsRedirection();
     app.UseStaticFiles();
