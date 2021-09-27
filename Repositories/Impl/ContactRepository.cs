@@ -1,8 +1,12 @@
 ﻿using Database;
+using LanguageExt;
+using LanguageExt.Common;
+using Microsoft.EntityFrameworkCore;
 using Models;
 using NodaTime;
 using Repositories.Contracts;
 using Transfer.Contact;
+
 
 namespace Repositories.Impl;
 
@@ -17,7 +21,7 @@ public class ContactRepository : IContactRepository
         _clock = clock;
     }
 
-    public async Task<Contact> CreateAsync(CreateContact createContact, CancellationToken cancellationToken = default)
+    public async Task<Result<Contact>> CreateAsync(CreateContact.Request createContact, CancellationToken cancellationToken = default)
     {
         var contact = new Contact
         {
@@ -30,10 +34,20 @@ public class ContactRepository : IContactRepository
         };
 
 
-        await _dbContext.AddAsync(contact, cancellationToken);
+        try
+        {
+            await _dbContext.AddAsync(contact, cancellationToken);
 
-        await _dbContext.SaveChangesAsync(cancellationToken);
+            await _dbContext.SaveChangesAsync(cancellationToken);
 
-        return contact;
+            return new Result<Contact>(contact);
+        }
+        catch (OperationCanceledException e)
+        {
+            return new Result<Contact>(e);
+        }catch(DbUpdateException e)
+        {
+            return new Result<Contact>(e);
+        }
     }
 }

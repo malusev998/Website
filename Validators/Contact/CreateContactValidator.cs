@@ -3,7 +3,7 @@ using Transfer.Contact;
 
 namespace Validators.Contact;
 
-public class CreateContactValidator : AbstractValidator<CreateContact>
+public class CreateContactValidator : AbstractValidator<CreateContact.Request>
 {
     public CreateContactValidator()
     {

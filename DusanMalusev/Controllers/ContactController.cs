@@ -16,11 +16,15 @@ namespace DusanMalusev.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> MessageMe([FromBody] CreateContact createContact)
+        public async Task<IActionResult> MessageMe([FromBody] CreateContact.Request createContact)
         {
             var response = await _sender.Send(createContact);
 
-            return Created("/api/contact-me", response);
+            return response.Match<IActionResult>(
+                contact => Created("/api/contact-me", response),
+                validation => UnprocessableEntity(),
+                databaseError => StatusCode(StatusCodes.Status500InternalServerError)
+            );
         }
     }
 }

@@ -9,7 +9,7 @@ public static class ServiceValidator
 {
     public static IServiceCollection AddValidators(this IServiceCollection services)
     {
-        services.AddSingleton<IValidator<CreateContact>, CreateContactValidator>();
+        services.AddSingleton<IValidator<CreateContact.Request>, CreateContactValidator>();
 
         return services;
     }
