@@ -4,7 +4,7 @@ const particlesSnowEffect = async (snowItem: string) => {
     await tsParticles.load(snowItem, {
         particles: {
             number: {
-                value: 100,
+                value: 80,
                 density: {
                     enable: true,
                     value_area: 800,

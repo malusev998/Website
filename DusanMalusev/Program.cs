@@ -79,7 +79,7 @@ try
         section.Bind(csrfCookieOptions);
 
         options.SuppressXFrameOptionsHeader = false;
-        
+
         options.Cookie.Name = csrfCookieOptions.Name;
         options.Cookie.Domain = csrfCookieOptions.Domain;
         options.Cookie.Path = csrfCookieOptions.Path;
@@ -88,6 +88,7 @@ try
         options.Cookie.HttpOnly = false;
         options.Cookie.MaxAge = TimeSpan.FromMinutes(csrfCookieOptions.ExpireIn);
         options.Cookie.SameSite = SameSiteMode.Strict;
+
         options.HeaderName = "X-CSRF-TOKEN";
         options.FormFieldName = "_csrf_token";
     });

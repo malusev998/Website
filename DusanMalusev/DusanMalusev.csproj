@@ -40,7 +40,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <TypeScriptCompile Include="client\snow.ts" />
+    <TypeScriptCompile Include="client\snow.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
   </ItemGroup>
 
 </Project>
