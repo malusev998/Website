@@ -16,6 +16,7 @@ namespace DusanMalusev.Controllers
         }
 
         [HttpPost]
+        [Route("")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> MessageMe([FromBody] CreateContact.Request createContact)
         {

@@ -2,6 +2,8 @@
 {
     public class CsrfCookie
     {
+        public const string Key = "CsrfCookieOptions";
+
         public string Name { get; set; }
 
         public string Domain { get; set; }

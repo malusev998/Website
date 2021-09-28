@@ -50,12 +50,12 @@ try
     // Add services to the container.
     builder.Services.AddRazorPages();
 
-    builder.Services.AddControllers((options) =>
+    builder.Services.AddControllers(options =>
     {
         options.Filters.Add<Handler>();
     });
 
-    builder.Services.AddOptions<CsrfCookie>("CsrfCookieOptions");
+    builder.Services.Configure<CsrfCookie>(builder.Configuration.GetSection(CsrfCookie.Key));
 
     builder.Services.AddSingleton<IClock>(p => SystemClock.Instance);
 
@@ -72,7 +72,22 @@ try
 
     builder.Services.AddAntiforgery(options =>
     {
+        var section = builder.Configuration.GetRequiredSection(CsrfCookie.Key);
+        var csrfCookieOptions = new CsrfCookie();
+
+
+        section.Bind(csrfCookieOptions);
+
         options.SuppressXFrameOptionsHeader = false;
+        
+        options.Cookie.Name = csrfCookieOptions.Name;
+        options.Cookie.Domain = csrfCookieOptions.Domain;
+        options.Cookie.Path = csrfCookieOptions.Path;
+        options.Cookie.IsEssential = true;
+        options.Cookie.SecurePolicy = csrfCookieOptions.Secure ? CookieSecurePolicy.Always : CookieSecurePolicy.SameAsRequest;
+        options.Cookie.HttpOnly = false;
+        options.Cookie.MaxAge = TimeSpan.FromMinutes(csrfCookieOptions.ExpireIn);
+        options.Cookie.SameSite = SameSiteMode.Strict;
         options.HeaderName = "X-CSRF-TOKEN";
         options.FormFieldName = "_csrf_token";
     });
@@ -93,7 +108,7 @@ try
         app.UseSerilogRequestLogging();
     }
 
-    app.UseMiddleware<CsrfMiddleware>();
+    // app.UseMiddleware<CsrfMiddleware>();
 
     app.UseHttpsRedirection();
     app.UseStaticFiles();

@@ -7,7 +7,7 @@ namespace Transfer.Contact;
 
 public static class CreateContact
 {
-    public record Request : IRequest<OneOf<Response, ValidationError, DatabaseError>>
+    public class Request : IRequest<OneOf<Response, ValidationError, DatabaseError>>
     {
         public string Name { get; set; }
 
