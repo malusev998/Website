@@ -4,20 +4,18 @@ using Microsoft.Extensions.Options;
 
 namespace DusanMalusev.Middleware;
 
-public class CsrfMiddleware
+public class CsrfMiddleware : IMiddleware
 {
-    private readonly RequestDelegate _next;
     private readonly IAntiforgery _csrf;
     private readonly CsrfCookie _csrfCookieOptions;
 
-    public CsrfMiddleware(RequestDelegate next, IAntiforgery csrf, IOptions<CsrfCookie> csrfCookieOptions)
+    public CsrfMiddleware( IAntiforgery csrf, IOptions<CsrfCookie> csrfCookieOptions)
     {
-        _next = next;
         _csrf = csrf;
         _csrfCookieOptions = csrfCookieOptions.Value;
     }
 
-    public async Task InvokeAsync(HttpContext context)
+    public async Task InvokeAsync(HttpContext context, RequestDelegate next)
     {
         string path = context.Request.Path.Value;
 
@@ -35,6 +33,6 @@ public class CsrfMiddleware
                 HttpOnly = false
             });
 
-        await _next(context);
+        await next(context);
     }
 }

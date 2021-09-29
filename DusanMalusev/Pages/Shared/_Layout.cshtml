@@ -7,7 +7,6 @@
     var url = ViewData["Url"] ?? "https://www.dusanmalusev.dev";
 }
 
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -18,13 +17,13 @@
     <meta name="keywords" content="@keywords" />
     <meta name="description" content="@description" />
     <meta name="twitter:card" content="@description" />
-    <meta name="twitter:site" content="" />
+    <meta name="twitter:site" content="@url" />
     <meta name="twitter:title" content="@title" />
     <meta name="twitter:description" content="@description" />
     <meta name="twitter:creator" content="" />
     <meta name="twitter:image" content="@ogImage" />
     <meta property="og:title" content="@title" />
-    <meta property="og:url" content="@url" />
+    <meta property="og:url" content="@ogUrl" />
     <meta property="og:image" content="@ogImage" />
     <meta property="og:description" content="@description" />
     <meta property="og:site_name" content="Dusan Malusev's Website" />
@@ -35,7 +34,7 @@
 <body class="relative min-h-screen text-white bg-main-dark-900">
     <section class="flex">
         <partial name="_Sidebar" />
-        <aside class="h-screen z-1 bg-transparent hidden 2xl:w-1/6 2xl:flex mr-10"></aside>
+        <aside class="h-screen z-1 bg-transparent hidden xl:w-1/6 xl:flex mr-10"></aside>
         <main class="w-full min-h-screen">
             <div class="flex w-full h-full">
                 @RenderBody()
@@ -53,7 +52,9 @@
         dataLayer.push({pageTitle: '@title'})
     </script>
 
-    <script src="~/dist/index.js" asp-append-version="true"></script>
+    <script async defer src="https://www.google.com/recaptcha/api.js?render=6Le3FcIZAAAAAEuqx3rtGyjkmLjfJz_QzBlfyfoT"></script>
+    <script async defer src="~/dist/index.js" asp-append-version="true"></script>
+    
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 

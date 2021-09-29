@@ -109,7 +109,7 @@ try
         app.UseSerilogRequestLogging();
     }
 
-    // app.UseMiddleware<CsrfMiddleware>();
+    app.UseMiddleware<CsrfMiddleware>();
 
     app.UseHttpsRedirection();
     app.UseStaticFiles();

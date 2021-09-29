@@ -40,6 +40,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <TypeScriptCompile Include="client\recaptcha.ts" />
     <TypeScriptCompile Include="client\snow.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
