@@ -22,6 +22,11 @@ namespace DusanMalusev.Exceptions
         {
             var exception = context.Exception;
 
+            if (exception == null)
+            {
+                return;
+            }
+
             if (exception is ValidationException validationException)
             {
                 context.Result = HandleValidationException(validationException);
