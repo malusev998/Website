@@ -44,7 +44,7 @@ var particlesSnowEffect = function (snowItem) { return __awaiter(void 0, void 0,
             case 0: return [4 /*yield*/, tsparticles_1.tsParticles.load(snowItem, {
                     particles: {
                         number: {
-                            value: 100,
+                            value: 80,
                             density: {
                                 enable: true,
                                 value_area: 800,

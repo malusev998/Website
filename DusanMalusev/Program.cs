@@ -74,8 +74,6 @@ try
     {
         var section = builder.Configuration.GetRequiredSection(CsrfCookie.Key);
         var csrfCookieOptions = new CsrfCookie();
-
-
         section.Bind(csrfCookieOptions);
 
         options.SuppressXFrameOptionsHeader = false;
@@ -109,7 +107,7 @@ try
         app.UseSerilogRequestLogging();
     }
 
-    // app.UseMiddleware<CsrfMiddleware>();
+    app.UseMiddleware<CsrfMiddleware>();
 
     app.UseHttpsRedirection();
     app.UseStaticFiles();
