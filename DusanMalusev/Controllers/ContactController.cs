@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using RecaptchaV3;
 using Transfer.Contact;
 
 namespace DusanMalusev.Controllers
@@ -18,6 +19,7 @@ namespace DusanMalusev.Controllers
         [HttpPost]
         [Route("")]
         [ValidateAntiForgeryToken]
+        [ReCaptchaV3(Threshold = 0.2f)]
         public async Task<IActionResult> MessageMe([FromBody] CreateContact.Request createContact)
         {
             var response = await _sender.Send(createContact);

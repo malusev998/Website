@@ -56,22 +56,27 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 require("./css/index.css");
+var recaptcha_1 = require("./recaptcha");
 var SNOW_EFFECT = 'snow-effect';
 document.addEventListener('DOMContentLoaded', function () { return __awaiter(void 0, void 0, void 0, function () {
     var snowParticals, particlesSnowEffect;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
-                snowParticals = document.getElementById(SNOW_EFFECT);
-                if (!snowParticals) return [3 /*break*/, 3];
-                return [4 /*yield*/, Promise.resolve().then(function () { return __importStar(require('./snow')); })];
+                (0, recaptcha_1.setKey)('6Le3FcIZAAAAAEuqx3rtGyjkmLjfJz_QzBlfyfoT');
+                return [4 /*yield*/, (0, recaptcha_1.ready)()];
             case 1:
+                _a.sent();
+                snowParticals = document.getElementById(SNOW_EFFECT);
+                if (!snowParticals) return [3 /*break*/, 4];
+                return [4 /*yield*/, Promise.resolve().then(function () { return __importStar(require('./snow')); })];
+            case 2:
                 particlesSnowEffect = (_a.sent()).particlesSnowEffect;
                 return [4 /*yield*/, particlesSnowEffect(SNOW_EFFECT)];
-            case 2:
+            case 3:
                 _a.sent();
-                _a.label = 3;
-            case 3: return [2 /*return*/];
+                _a.label = 4;
+            case 4: return [2 /*return*/];
         }
     });
 }); });

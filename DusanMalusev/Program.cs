@@ -2,6 +2,7 @@ using Database;
 using Repositories;
 using Validators;
 using Handlers;
+using RecaptchaV3;
 using Serilog;
 using Serilog.Events;
 using NodaTime;
@@ -56,6 +57,7 @@ try
     });
 
     builder.Services.Configure<CsrfCookie>(builder.Configuration.GetSection(CsrfCookie.Key));
+    builder.Services.Configure<ReCaptchaV3Service>(builder.Configuration.GetSection("Google:ReCaptchaV3"));
 
     builder.Services.AddSingleton<IClock>(p => SystemClock.Instance);
 
@@ -69,6 +71,8 @@ try
     builder.Services
         .AddValidators()
         .AddMediatr();
+
+    builder.Services.AddReCaptchaV3();
 
     builder.Services.AddAntiforgery(options =>
     {

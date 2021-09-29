@@ -15,11 +15,8 @@ public class CsrfTokenController : Controller
     }
 
     [HttpGet]
-    public IActionResult Index()
+    public IActionResult Index() => Ok(new
     {
-        return Ok(new
-        {
-            Token = _csrf.GetTokens(HttpContext)?.RequestToken
-        });
-    }
+        Token = _csrf.GetTokens(HttpContext)?.RequestToken
+    });
 }

@@ -13,6 +13,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Database\Database.csproj" />
+    <ProjectReference Include="..\Errors\Errors.csproj" />
     <ProjectReference Include="..\Models\Models.csproj" />
     <ProjectReference Include="..\Transfer\Transfer.csproj" />
   </ItemGroup>

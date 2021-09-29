@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
@@ -11,7 +11,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNet.WebApi.Core" Version="5.2.7" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="6.0.0-rc.1.21452.10">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -34,6 +33,7 @@
     <ProjectReference Include="..\Database\Database.csproj" />
     <ProjectReference Include="..\Handlers\Handlers.csproj" />
     <ProjectReference Include="..\Models\Models.csproj" />
+    <ProjectReference Include="..\RecaptchaV3\RecaptchaV3.csproj" />
     <ProjectReference Include="..\Repositories\Repositories.csproj" />
     <ProjectReference Include="..\Transfer\Transfer.csproj" />
     <ProjectReference Include="..\Validators\Validators.csproj" />
