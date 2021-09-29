@@ -5,9 +5,9 @@ namespace RecaptchaV3;
 public class ReCaptchaV3AuthorizationFilter : IAsyncAuthorizationFilter
 {
     private readonly IReCaptchaService _service;
-    private readonly float _threshold;
+    private readonly float? _threshold;
 
-    public ReCaptchaV3AuthorizationFilter(IReCaptchaService service, float threshold)
+    public ReCaptchaV3AuthorizationFilter(IReCaptchaService service, float? threshold)
     {
         _service = service;
         _threshold = threshold;
@@ -23,7 +23,7 @@ public class ReCaptchaV3AuthorizationFilter : IAsyncAuthorizationFilter
             return;
         }
 
-        var result = await _service.VerifyAsync("", cancellationToken: context.HttpContext.RequestAborted);
+        var result = await _service.VerifyAsync("", score: _threshold, cancellationToken: context.HttpContext.RequestAborted);
         throw new NotImplementedException();
     }
 }

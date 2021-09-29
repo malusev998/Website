@@ -19,7 +19,7 @@ namespace DusanMalusev.Controllers
         [HttpPost]
         [Route("")]
         [ValidateAntiForgeryToken]
-        [ReCaptchaV3(Threshold = 0.2f)]
+        [ReCaptchaV3]
         public async Task<IActionResult> MessageMe([FromBody] CreateContact.Request createContact)
         {
             var response = await _sender.Send(createContact);

@@ -8,7 +8,7 @@ public class ReCaptchaV3Attribute : Attribute, IFilterFactory
 {
     public bool IsReusable => false;
 
-    public float Threshold = 0.5f;
+    public float? Threshold = null;
 
     public IFilterMetadata CreateInstance(IServiceProvider serviceProvider)
     {
