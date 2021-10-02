@@ -1,5 +1,5 @@
 import './css/index.css';
-import { ready, setKey } from './recaptcha';
+import { setKey } from './recaptcha';
 import { setBaseUrl } from './http';
 import {
     CONTACT_FORM,
@@ -35,7 +35,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         setCsrfTokenHeader(csrf.HEADER_NAME);
 
         setKey('6Le3FcIZAAAAAEuqx3rtGyjkmLjfJz_QzBlfyfoT');
-        await ready();
         const snowParticals = document.getElementById(SNOW_EFFECT);
 
         if (snowParticals) {

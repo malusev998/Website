@@ -472,6 +472,7 @@ const contact = async (dto)=>{
             recursive: true,
             abortEarly: false
         });
+        await _recaptcha.ready();
         const token = await _recaptcha.execute('contact');
         const res = await _http.http('/contact-me', _http.HttpMethod.POST, dto, undefined, token);
         if (res.status >= 400) throw {

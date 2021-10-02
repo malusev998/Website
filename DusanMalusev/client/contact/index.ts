@@ -1,6 +1,6 @@
 import { ValidationError } from "yup";
 import { Err } from "../error";
-import {execute} from '../recaptcha';
+import { execute, ready } from '../recaptcha';
 import { http, HttpMethod } from "../http";
 import {Contact} from "./model";
 import {ContactValidationError, schema} from "./validation";
@@ -12,6 +12,8 @@ const Swal = require('sweetalert2');
 const contact = async (dto: ContactDto): Promise<Contact | Err | ContactValidationError> => {
     try {
         await schema.validate(dto, { recursive: true, abortEarly: false });
+
+        await ready();
 
         const token = await execute('contact');
 

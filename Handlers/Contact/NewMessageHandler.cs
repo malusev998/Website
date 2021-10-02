@@ -24,7 +24,7 @@ namespace Handlers.Contact
 
             if (!result.IsValid)
             {
-                return new ValidationError();
+                return new ValidationError(result.Errors);
             }
 
             var contact = await _contactRepository.CreateAsync(request, cancellationToken);

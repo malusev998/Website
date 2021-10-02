@@ -466,7 +466,6 @@ document.addEventListener('DOMContentLoaded', async ()=>{
         _csrf.setCsrfTokenCookieName(_csrf.COOKIE_NAME);
         _csrf.setCsrfTokenHeader(_csrf.HEADER_NAME);
         _recaptcha.setKey('6Le3FcIZAAAAAEuqx3rtGyjkmLjfJz_QzBlfyfoT');
-        await _recaptcha.ready();
         const snowParticals = document.getElementById(_elements.SNOW_EFFECT);
         if (snowParticals) {
             const { particlesSnowEffect  } = await require("a9d80c569dbd29df");

@@ -42,6 +42,11 @@ public class ReCaptchaV3Service : IReCaptchaService
 
         var recaptcha = await JsonSerializer.DeserializeAsync<Response>(bodyStream, cancellationToken: cancellationToken);
 
+        if (!recaptcha!.Success && (recaptcha.Errors == null || recaptcha.Errors.Length == 0) && recaptcha.Score >= threshold)
+        {
+            return true;
+        }
+
         return recaptcha!.Success && !(recaptcha.Score < threshold);
     }
 }

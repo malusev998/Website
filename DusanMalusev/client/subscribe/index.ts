@@ -1,7 +1,7 @@
 import { ValidationError } from 'yup';
 import { Err } from '../error';
 import { http, HttpMethod } from '../http';
-import { execute } from '../recaptcha';
+import { execute, ready } from '../recaptcha';
 import { SubscriptionDTO } from './dto';
 import { Subscription } from './model';
 
@@ -13,9 +13,11 @@ const subscribe = async (dto: SubscriptionDTO): Promise<Subscription | Err | Sub
     try {
         await schema.validate(dto, { recursive: true, abortEarly: false });
 
+        await ready();
+
         const token = await execute('contact');
 
-        const res = await http('/subscribe', HttpMethod.POST, dto);
+        const res = await http('/subscribe', HttpMethod.POST, dto, null, token);
 
         const data = await res.json();
 

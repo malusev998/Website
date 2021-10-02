@@ -26,7 +26,7 @@ public class ContactController : Controller
 
         return response.Match<IActionResult>(
             contact => Created("/api/contact-me", contact),
-            validation => UnprocessableEntity(),
+            validation => UnprocessableEntity(validation),
             databaseError => StatusCode(StatusCodes.Status500InternalServerError)
         );
     }

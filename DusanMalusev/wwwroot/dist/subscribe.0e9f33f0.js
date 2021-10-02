@@ -470,8 +470,9 @@ const subscribe = async (dto)=>{
             recursive: true,
             abortEarly: false
         });
+        await _recaptcha.ready();
         const token = await _recaptcha.execute('contact');
-        const res = await _http.http('/subscribe', _http.HttpMethod.POST, dto);
+        const res = await _http.http('/subscribe', _http.HttpMethod.POST, dto, null, token);
         const data = await res.json();
         return {
             id: data.id,

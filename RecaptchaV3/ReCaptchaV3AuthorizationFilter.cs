@@ -23,11 +23,6 @@ public class ReCaptchaV3AuthorizationFilter : IAsyncActionFilter
     {
         var method = context.HttpContext.Request.Method;
 
-        if (method is "GET" or "OPTIONS")
-        {
-            return;
-        }
-
         var succeeded = context.HttpContext.Request.Headers.TryGetValue(_headerName, out var values);
 
         if (!succeeded || values.Count != 1)
@@ -60,5 +55,7 @@ public class ReCaptchaV3AuthorizationFilter : IAsyncActionFilter
                 StatusCode = StatusCodes.Status428PreconditionRequired
             };
         }
+
+        await next();
     }
 }

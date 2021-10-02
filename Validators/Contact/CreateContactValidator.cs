@@ -20,7 +20,7 @@ public class CreateContactValidator : AbstractValidator<CreateContact.Request>
             .WithMessage("Email cannot be empty")
             .MaximumLength(255)
             .WithMessage("Email cannot be longer than 255 characters")
-            .MinimumLength(15)
+            .MinimumLength(5)
             .WithMessage("Minimum length for Name is 15 characters")
             .EmailAddress()
             .WithMessage("Email is not valid");
@@ -30,7 +30,7 @@ public class CreateContactValidator : AbstractValidator<CreateContact.Request>
             .WithMessage("Subject cannot be empty")
             .MaximumLength(200)
             .WithMessage("Subject cannot be longer than 200 characters")
-            .MinimumLength(10)
+            .MinimumLength(3)
             .WithMessage("Minimum length for Subject is 10 characters");
 
         RuleFor(c => c.Message)
@@ -38,7 +38,7 @@ public class CreateContactValidator : AbstractValidator<CreateContact.Request>
             .WithMessage("Message cannot be empty")
             .MaximumLength(1000)
             .WithMessage("Message cannot be longer than 1000 characters")
-            .MinimumLength(10)
+            .MinimumLength(5)
             .WithMessage("Minimum length for Message is 10 characters");
     }
 }
