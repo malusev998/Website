@@ -1,3 +1,5 @@
+import { setCsrfToken } from "./csrf";
+
 enum HttpMethod {
     GET = 'GET',
     POST = 'POST',
@@ -28,6 +30,7 @@ async function http<T extends Payload>(url: string, method: HttpMethod, body?: T
                 'Content-Type': 'application/json',
                 'Accept': 'application/json',
                 'X-Requested-With': 'XMLHttpRequest',
+                ...setCsrfToken(),
             }
         }
     } else {
@@ -37,12 +40,13 @@ async function http<T extends Payload>(url: string, method: HttpMethod, body?: T
             'Accept': 'application/json',
             'X-Requested-With': 'XMLHttpRequest',
             ...opt.headers,
+            ...setCsrfToken()
         };
     }
 
     if(typeof recaptchaToken === 'string') {
         opt.headers = {
-            'ReCaptchaV3-Token': recaptchaToken,
+            'X-ReCaptchaV3-Token': recaptchaToken,
             ...opt.headers
         };
     }

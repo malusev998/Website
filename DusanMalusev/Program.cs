@@ -9,6 +9,7 @@ using NodaTime;
 using DusanMalusev.Exceptions;
 using DusanMalusev.Middleware;
 using DusanMalusev.Options;
+using Microsoft.AspNetCore.HttpOverrides;
 
 Log.Logger = new LoggerConfiguration()
     .MinimumLevel.Override("Microsoft", LogEventLevel.Information)
@@ -29,8 +30,7 @@ try
     );
 
     builder.Host.UseConsoleLifetime();
-
-
+    
     builder.WebHost.UseKestrel(options =>
     {
         options.AllowSynchronousIO = false;
@@ -53,11 +53,14 @@ try
     {
         options.Filters.Add<Handler>();
     });
+    
+    builder.Services.AddOptions<CsrfCookie>()
+        .Bind(builder.Configuration.GetSection(CsrfCookie.Key));
+    
+    builder.Services.AddOptions<ReCaptchaV3Settings>()
+        .Bind(builder.Configuration.GetSection("Google:ReCaptchaV3"));
 
-    builder.Services.Configure<CsrfCookie>(builder.Configuration.GetSection(CsrfCookie.Key));
-    builder.Services.Configure<ReCaptchaV3Service>(builder.Configuration.GetSection("Google:ReCaptchaV3"));
-
-    builder.Services.AddSingleton<IClock>(p => SystemClock.Instance);
+    builder.Services.AddSingleton<IClock>(_ => SystemClock.Instance);
 
     builder.Services.AddDatabase(
        builder.Configuration.GetConnectionString(Database.ServiceProvider.ConnectionStringKey),
@@ -79,8 +82,7 @@ try
         section.Bind(csrfCookieOptions);
 
         options.SuppressXFrameOptionsHeader = false;
-
-        options.Cookie.Name = csrfCookieOptions.Name;
+        
         options.Cookie.Domain = csrfCookieOptions.Domain;
         options.Cookie.Path = csrfCookieOptions.Path;
         options.Cookie.IsEssential = true;
@@ -89,8 +91,8 @@ try
         options.Cookie.MaxAge = TimeSpan.FromMinutes(csrfCookieOptions.ExpireIn);
         options.Cookie.SameSite = SameSiteMode.Strict;
 
-        options.HeaderName = "X-CSRF-TOKEN";
-        options.FormFieldName = "_csrf_token";
+        options.HeaderName = csrfCookieOptions.HeaderName;
+        options.FormFieldName = csrfCookieOptions.FieldName;
     });
 
     var app = builder.Build();
@@ -108,6 +110,13 @@ try
         app.UseDeveloperExceptionPage();
         app.UseSerilogRequestLogging();
     }
+
+    app.UseForwardedHeaders(new ForwardedHeadersOptions
+    {
+        ForwardedHeaders = ForwardedHeaders.XForwardedFor |
+                           ForwardedHeaders.XForwardedProto | 
+                           ForwardedHeaders.XForwardedHost
+    });  
 
     app.UseMiddleware<CsrfMiddleware>();
 

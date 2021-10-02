@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Database.Migrations
 {
     [DbContext(typeof(DusanMalusevDbContext))]
-    [Migration("20210926193536_CreateContactsTable")]
-    partial class CreateContactsTable
+    [Migration("20211002122317_CreateContactTable")]
+    partial class CreateContactTable
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -62,11 +62,6 @@ namespace Database.Migrations
                         .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("subject");
-
-                    b.Property<string>("Surname")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("surname");
 
                     b.Property<ZonedDateTime>("UpdatedAt")
                         .HasColumnType("timestamp with time zone")

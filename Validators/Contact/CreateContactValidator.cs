@@ -15,16 +15,6 @@ public class CreateContactValidator : AbstractValidator<CreateContact.Request>
             .MinimumLength(2)
             .WithMessage("Minimum length for Name is 2 characters");
 
-
-        RuleFor(c => c.Surname)
-            .NotEmpty()
-            .WithMessage("Surname cannot be empty")
-            .MaximumLength(50)
-            .WithMessage("Surname cannot be longer than 50 characters")
-            .MinimumLength(2)
-            .WithMessage("Minimum length for Surname is 2 characters");
-
-
         RuleFor(c => c.Email)
             .NotEmpty()
             .WithMessage("Email cannot be empty")

@@ -1,6 +1,7 @@
 ﻿using System;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 
 namespace RecaptchaV3;
 
@@ -14,7 +15,10 @@ public class ReCaptchaV3Attribute : Attribute, IFilterFactory
     public IFilterMetadata CreateInstance(IServiceProvider serviceProvider)
     {
         var service = serviceProvider.GetRequiredService<IReCaptchaService>();
+        var options = serviceProvider.GetRequiredService<IOptions<ReCaptchaV3Settings>>().Value;
 
-        return new ReCaptchaV3AuthorizationFilter(service, Threshold);
+        var header = options.HeaderName;
+        
+        return new ReCaptchaV3AuthorizationFilter(service, header, Threshold);
     }
 }

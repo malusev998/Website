@@ -1,10 +1,6 @@
 using System.Net;
-using System.Net.Http;
 using Microsoft.Extensions.Options;
-using System.Text;
 using System.Text.Json;
-using System.Threading;
-using System.Threading.Tasks;
 using RecaptchaV3.Internal;
 
 namespace RecaptchaV3;
@@ -24,24 +20,28 @@ public class ReCaptchaV3Service : IReCaptchaService
     {
         var threshold = score ?? _settings.Threshold;
 
-        var request = new Request
+        var items = new List<KeyValuePair<string, string>>
         {
-            SecretKey = _settings.PrivateKey,
-            Token = token,
-            Ip = ip,
+            new("secret", _settings.SecretKey),
+            new("response", token),
         };
 
-        var content = new StringContent(JsonSerializer.Serialize(request), Encoding.UTF8, "application/json");
+        if (!string.IsNullOrWhiteSpace(ip))
+        {
+            items.Add(new KeyValuePair<string, string>("remoteip", ip!));
+        }
+
+        var content = new FormUrlEncodedContent(items);
 
         var response = await _client.PostAsync("", content, cancellationToken);
 
         if (response is not { StatusCode: HttpStatusCode.OK })
             return false;
-        
+
         var bodyStream = await response.Content.ReadAsStreamAsync();
 
         var recaptcha = await JsonSerializer.DeserializeAsync<Response>(bodyStream, cancellationToken: cancellationToken);
-        
+
         return recaptcha!.Success && !(recaptcha.Score < threshold);
     }
 }

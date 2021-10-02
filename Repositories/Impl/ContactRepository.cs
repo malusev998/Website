@@ -28,7 +28,6 @@ public class ContactRepository : IContactRepository
         var contact = new Contact
         {
             Name = createContact.Name,
-            Surname = createContact.Surname,
             Email = createContact.Email,
             Subject = createContact.Subject,
             Message = createContact.Message,

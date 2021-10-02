@@ -10,7 +10,7 @@ endif
 
 publish:
 ifeq ($(SELF_CONTAINED), 1)
-	dotnet publish --self-contained true -c Release --nologo --no-restore -r $(RUNTIME)  -p:PublishReadyToRun=true
+	dotnet publish --self-contained true -c Release --nologo --no-restore -r $(RUNTIME)  -p:UseAppHost=false  -p:PublishReadyToRun=true
 else
 	dotnet publish -c Release --nologo --no-restore -p:UseAppHost=false
 endif

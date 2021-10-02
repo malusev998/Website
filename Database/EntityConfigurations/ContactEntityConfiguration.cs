@@ -18,12 +18,6 @@ public class ContactEntityConfiguration : IEntityTypeConfiguration<Contact>
             .HasMaxLength(50)
             .IsUnicode()
             .IsRequired();
-        
-        
-        builder.Property(t => t.Surname)
-            .HasMaxLength(50)
-            .IsUnicode()
-            .IsRequired();
 
         builder.Property(t => t.Email)
             .HasMaxLength(255)

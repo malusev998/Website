@@ -19,11 +19,20 @@ import {
     SUBSCRIBE_FORM_NAME_ERROR
 } from './elements';
 
+import * as csrf from './csrf';
+
+import {
+    setCsrfTokenCookieName,
+    setCsrfTokenHeader
+} from './csrf';
+
 
 
 document.addEventListener('DOMContentLoaded', async () => {
     try {
         setBaseUrl('https://localhost:5001/api');
+        setCsrfTokenCookieName(csrf.COOKIE_NAME);
+        setCsrfTokenHeader(csrf.HEADER_NAME);
 
         setKey('6Le3FcIZAAAAAEuqx3rtGyjkmLjfJz_QzBlfyfoT');
         await ready();

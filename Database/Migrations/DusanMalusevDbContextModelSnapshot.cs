@@ -61,11 +61,6 @@ namespace Database.Migrations
                         .HasColumnType("text")
                         .HasColumnName("subject");
 
-                    b.Property<string>("Surname")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("surname");
-
                     b.Property<ZonedDateTime>("UpdatedAt")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("updated_at");

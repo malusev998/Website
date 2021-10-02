@@ -5,7 +5,7 @@ using NodaTime;
 
 namespace Database.Migrations
 {
-    public partial class CreateContactsTable : Migration
+    public partial class CreateContactTable : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -28,7 +28,6 @@ namespace Database.Migrations
                 {
                     id = table.Column<int>(type: "integer", nullable: false),
                     name = table.Column<string>(type: "text", nullable: false),
-                    surname = table.Column<string>(type: "text", nullable: false),
                     email = table.Column<string>(type: "text", nullable: false),
                     subject = table.Column<string>(type: "text", nullable: false),
                     message = table.Column<string>(type: "text", nullable: false),

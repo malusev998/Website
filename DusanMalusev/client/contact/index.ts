@@ -17,6 +17,15 @@ const contact = async (dto: ContactDto): Promise<Contact | Err | ContactValidati
 
         const res = await http('/contact-me', HttpMethod.POST, dto, undefined, token);
 
+        if (res.status >= 400) {
+            throw {
+                res,
+                message: "Status code greater than 400",
+                body: await res.text(),
+                headers: res.headers,
+            };
+        }
+
         const data = await res.json();
 
         return {
@@ -28,6 +37,7 @@ const contact = async (dto: ContactDto): Promise<Contact | Err | ContactValidati
             createdAt: new Date(data.createdAt),
         }
     } catch (err) {
+        console.error(err);
         if (err instanceof ValidationError) {
             const validationError: ContactValidationError = {
                 nameError: '',
@@ -52,7 +62,7 @@ const contact = async (dto: ContactDto): Promise<Contact | Err | ContactValidati
         }
 
         return {
-            message: 'Try again please',
+            message: 'Try again please later',
         };
     }
 }

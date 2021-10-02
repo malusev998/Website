@@ -1,6 +1,4 @@
-﻿using System.Threading;
-using System.Threading.Tasks;
-using Errors;
+﻿using Errors;
 using FluentValidation;
 using MediatR;
 using OneOf;
@@ -36,7 +34,6 @@ namespace Handlers.Contact
             {
                 Id = contact.Id,
                 Name = contact.Name,
-                Surname = contact.Surname,
                 Email = contact.Email,
                 Subject = contact.Subject,
                 Message = contact.Message,

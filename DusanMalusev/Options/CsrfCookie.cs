@@ -12,6 +12,9 @@
 
         public int ExpireIn { get; set; }
 
+        public string HeaderName { get; set; }
+        public string FieldName { get; set; }
+        
         public string Path { get; set; }
     }
 }

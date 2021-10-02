@@ -19,7 +19,6 @@ public static class ServiceProvider
                 client.BaseAddress = new Uri(options.Url);
 
                 client.DefaultRequestHeaders.Add("User-Agent", options.UserAgent);
-                client.DefaultRequestHeaders.Add("Content-Type", "application/json");
                 client.DefaultRequestHeaders.Add("Accept", "application/json");
             })
             .ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler
