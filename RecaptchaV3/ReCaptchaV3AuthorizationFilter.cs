@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc.Filters;
+﻿using System;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc.Filters;
 
 namespace RecaptchaV3;
 
@@ -15,10 +17,9 @@ public class ReCaptchaV3AuthorizationFilter : IAsyncAuthorizationFilter
 
     public async Task OnAuthorizationAsync(AuthorizationFilterContext context)
     {
-
         var method = context.HttpContext.Request.Method;
 
-        if (method == "GET" || method == "OPTIONS")
+        if (method is "GET" or "OPTIONS")
         {
             return;
         }

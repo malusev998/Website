@@ -21,10 +21,13 @@ services:
     environment:
         PGADMIN_DEFAULT_EMAIL: "test@gmail.com"
         PGADMIN_DEFAULT_PASSWORD: "test123!"
+        PGADMIN_CONFIG_CONSOLE_LOG_LEVEL: 10
     ports:
-        - '5000:80'
+        - '8000:80'
     depends_on:
         - postgres
+    volumes:
+      - pgadmin:/var/lib/pgadmin
   redis:
     image: redis:6-alpine
     volumes:
@@ -39,8 +42,6 @@ services:
       -  '8001:8001'
     depends_on:
       - redis
-    volumes:
-      - redis:/db
     networks:
       - net
 networks:
@@ -48,4 +49,5 @@ networks:
     driver: bridge
 volumes:
   postgres:
+  pgadmin:
   redis:

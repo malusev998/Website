@@ -12,7 +12,7 @@ using DusanMalusev.Options;
 
 Log.Logger = new LoggerConfiguration()
     .MinimumLevel.Override("Microsoft", LogEventLevel.Information)
-    .MinimumLevel.Override("Microsoft.AspNetCore", LogEventLevel.Warning)
+    .MinimumLevel.Override("Microsoft.AspNetCore", LogEventLevel.Information)
     .Enrich.FromLogContext()
     .WriteTo.Console()
     .CreateBootstrapLogger();
@@ -46,11 +46,9 @@ try
         });
     });
 
-
-
     // Add services to the container.
     builder.Services.AddRazorPages();
-
+    
     builder.Services.AddControllers(options =>
     {
         options.Filters.Add<Handler>();
@@ -64,8 +62,8 @@ try
     builder.Services.AddDatabase(
        builder.Configuration.GetConnectionString(Database.ServiceProvider.ConnectionStringKey),
        builder.Configuration.GetValue<bool>("Postgres:Development"),
-       minBatchSize: builder.Configuration.GetValue<int>("Postgres:MinBatchSize"),
-       maxBatchSize: builder.Configuration.GetValue<int>("Postgres:MaxBatchSize")
+       builder.Configuration.GetValue<int>("Postgres:MinBatchSize"),
+       builder.Configuration.GetValue<int>("Postgres:MaxBatchSize")
    ).AddRepositories();
 
     builder.Services

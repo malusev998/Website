@@ -2,19 +2,21 @@
 
 namespace DusanMalusev.Middleware;
 
-public class CsrfMiddleware : IMiddleware
+public class CsrfMiddleware
 {
     private readonly IAntiforgery _csrf;
+    private readonly RequestDelegate _next;
 
-    public CsrfMiddleware( IAntiforgery csrf)
+    public CsrfMiddleware(RequestDelegate next, IAntiforgery csrf)
     {
         _csrf = csrf;
+        _next = next;
     }
 
-    public async Task InvokeAsync(HttpContext context, RequestDelegate next)
+    public async Task InvokeAsync(HttpContext context)
     {
         _csrf.GetAndStoreTokens(context);
 
-        await next(context);
+        await _next(context);
     }
 }

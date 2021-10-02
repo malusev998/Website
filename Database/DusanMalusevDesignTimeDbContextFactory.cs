@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.IO;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
 using Microsoft.Extensions.Configuration;
 
@@ -8,9 +9,13 @@ public class DusanMalusevDesignTimeDbContextFactory : IDesignTimeDbContextFactor
 {
     public DusanMalusevDbContext CreateDbContext(string[] args)
     {
+        string environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
+
+
         IConfigurationRoot configuration = new ConfigurationBuilder()
-            .SetBasePath(Directory.GetCurrentDirectory())
-            .AddJsonFile("appsettings.Development.json")
+            .SetBasePath(Path.Combine(Directory.GetCurrentDirectory(), "..", "DusanMalusev"))
+            .AddJsonFile("appsettings.json")
+             .AddJsonFile($"appsettings.{environment}.json", optional: true)
             .AddEnvironmentVariables()
             .Build();
 

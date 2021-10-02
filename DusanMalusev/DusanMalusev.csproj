@@ -50,12 +50,4 @@
     <ProjectReference Include="..\Transfer\Transfer.csproj" />
     <ProjectReference Include="..\Validators\Validators.csproj" />
   </ItemGroup>
-
-  <ItemGroup>
-    <TypeScriptCompile Include="client\recaptcha.ts" />
-    <TypeScriptCompile Include="client\snow.ts">
-      <SubType>Code</SubType>
-    </TypeScriptCompile>
-  </ItemGroup>
-
 </Project>

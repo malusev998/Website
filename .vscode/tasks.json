@@ -1,0 +1,66 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "build",
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "build",
+                "${workspaceFolder}/DusanMalusev/DusanMalusev.csproj",
+                "/property:GenerateFullPaths=true",
+                "/consoleloggerparameters:NoSummary"
+            ],
+            "problemMatcher": "$msCompile"
+        },
+        {
+            "label": "build assets",
+            "command": "npm",
+            "type": "process",
+            "args": [
+                "run",
+                "prod",
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}/DusanMalusev"
+            }
+        },
+        {
+            "label": "publish",
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "publish",
+                "${workspaceFolder}/DusanMalusev/DusanMalusev.csproj",
+                "/property:GenerateFullPaths=true",
+                "/consoleloggerparameters:NoSummary"
+            ],
+            "problemMatcher": "$msCompile"
+        },
+        {
+            "label": "watch",
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "watch",
+                "run",
+                "${workspaceFolder}/DusanMalusev/DusanMalusev.csproj",
+                "/property:GenerateFullPaths=true",
+                "/consoleloggerparameters:NoSummary"
+            ],
+            "problemMatcher": "$msCompile"
+        },
+        {
+            "label": "watch assets",
+            "command": "npm",
+            "type": "process",
+            "args": [
+                "run",
+                "watch",
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}/DusanMalusev"
+            }
+        }
+    ]
+}

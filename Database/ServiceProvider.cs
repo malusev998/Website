@@ -14,7 +14,6 @@ public static class ServiceProvider
             AddDbContext(builder, connectionString, isDevelopment, minBatchSize, maxBatchSize);
         });
 
-
         return services;
     }
 
@@ -30,7 +29,7 @@ public static class ServiceProvider
                 options.EnableRetryOnFailure(3);
                 options.MaxBatchSize(maxBatchSize);
                 options.MinBatchSize(minBatchSize);
-                // options.SetPostgresVersion(Version.Parse("13"));
+                // options.SetPostgresVersion(new Version(13, 0));
                 options.UseNodaTime();
             });
     }

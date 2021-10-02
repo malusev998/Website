@@ -1,7 +1,11 @@
+using System.Net;
+using System.Net.Http;
 using Microsoft.Extensions.Options;
 using System.Text;
 using System.Text.Json;
-using System.Text.Json.Serialization;
+using System.Threading;
+using System.Threading.Tasks;
+using RecaptchaV3.Internal;
 
 namespace RecaptchaV3;
 
@@ -27,59 +31,17 @@ public class ReCaptchaV3Service : IReCaptchaService
             Ip = ip,
         };
 
-
         var content = new StringContent(JsonSerializer.Serialize(request), Encoding.UTF8, "application/json");
 
         var response = await _client.PostAsync("", content, cancellationToken);
 
-        if (response == null)
+        if (response is not { StatusCode: HttpStatusCode.OK })
             return false;
-
-
-        if (response.StatusCode != System.Net.HttpStatusCode.OK)
-            return false;
-
+        
         var bodyStream = await response.Content.ReadAsStreamAsync();
 
         var recaptcha = await JsonSerializer.DeserializeAsync<Response>(bodyStream, cancellationToken: cancellationToken);
-
-        if (response == null)
-            return false;
-
-        if (!recaptcha!.Success || recaptcha.Score < threshold)
-            return false;
-
-        return true;
+        
+        return recaptcha!.Success && !(recaptcha.Score < threshold);
     }
-}
-
-internal class Request
-{
-    [JsonPropertyName("secret")]
-    public string SecretKey { get; set; }
-
-    [JsonPropertyName("remoteip")]
-    public string? Ip { get; set; }
-
-    [JsonPropertyName("response")]
-    public string Token { get; set; }
-}
-
-
-internal class Response
-{
-    [JsonPropertyName("secret")]
-    public bool Success { get; set; }
-
-    [JsonPropertyName("challenge_ts")]
-    public string TimeStamp { get; set; }
-
-    [JsonPropertyName("hostname")]
-    public string HostName { get; set; }
-
-    [JsonPropertyName("score")]
-    public float Score { get; set; }
-
-    [JsonPropertyName("error-codes")]
-    public string[]? Errors { get; set; }
 }
