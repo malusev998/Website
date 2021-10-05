@@ -103,7 +103,7 @@ try
     if (!app.Environment.IsDevelopment())
     {
         app.UseExceptionHandler("/Error");
-        app.UseHsts();
+        // app.UseHsts();
     }
 
     if (app.Environment.IsDevelopment())
@@ -122,7 +122,7 @@ try
 
     app.UseMiddleware<CsrfMiddleware>();
 
-    app.UseHttpsRedirection();
+    // app.UseHttpsRedirection();
     app.UseStaticFiles();
 
     app.UseRouting();
