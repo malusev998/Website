@@ -7,7 +7,7 @@ import { Subscription } from './model';
 
 import { schema, SubscriptionValidationError } from './validation';
 
-const Swal = require('sweetalert2');
+import Swal from 'sweetalert2/dist/sweetalert2.js';
 
 const subscribe = async (dto: SubscriptionDTO): Promise<Subscription | Err | SubscriptionValidationError> => {
     try {
@@ -17,7 +17,7 @@ const subscribe = async (dto: SubscriptionDTO): Promise<Subscription | Err | Sub
 
         const token = await execute('contact');
 
-        const res = await http('/subscribe', HttpMethod.POST, dto, null, token);
+        const res = await http('/subscribe/new', HttpMethod.POST, dto, null, token);
 
         const data = await res.json();
 
@@ -95,7 +95,6 @@ const subscribeFormHandler = (
         return;
     }
 
-    //@ts-ignore
     gtag('event', 'subscribe', {
         event_category: 'subscription',
         event_label: 'New user subscribed to news letters',

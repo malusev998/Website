@@ -1,11 +1,16 @@
-﻿@{
+﻿@inject IConfiguration config
+
+@{
     var title = ViewData["Title"];
     var keywords = ViewData["Keywords"] ?? "developer,dusan,dusan malusev,software,web developer,backend software developer,backend";
     var description = ViewData["Description"] ?? "Backend software engineer from Serbia with relevant experience in building various backend systems";
     var ogUrl = ViewData["OgUrl"];
     var ogImage = ViewData["OgImage"] ?? "~/img/malusev.png";
     var url = ViewData["Url"] ?? "https://www.dusanmalusev.dev";
+    var googleAnalyticsKey = config.GetValue<string>("Google:Analytics");
+    var googleRecaptchaPublicKey = config.GetValue<string>("Google:ReCaptchaV3:PublicKey");
 }
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -28,6 +33,7 @@
     <meta property="og:description" content="@description"/>
     <meta property="og:site_name" content="Dusan Malusev's Website"/>
 
+    <link rel="stylesheet" href="~/dark.min.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/dist/index.css" asp-append-version="true"/>
 </head>
 
@@ -41,21 +47,13 @@
         </div>
     </main>
 </section>
-<script src="https://www.googletagmanager.com/gtag/js?id=UA-187169857-1"></script>
-<script src="https://www.google.com/recaptcha/api.js?render=6Le3FcIZAAAAAEuqx3rtGyjkmLjfJz_QzBlfyfoT"></script>
 
-<script>
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        gtag('js', new Date());
 
-        gtag('config', 'UA-187169857-1');
+<script src="https://www.googletagmanager.com/gtag/js?id=@googleAnalyticsKey"></script>
+<script src="https://www.google.com/recaptcha/api.js?render=@googleRecaptchaPublicKey"></script>
 
-        dataLayer.push({pageTitle: '@title'})
-        
-        window.grecaptcha = grecaptcha;
-    </script>
 
+<script src="~/analytics.js"></script>
 <script src="~/dist/index.js" asp-append-version="true"></script>
 
 @await RenderSectionAsync("Scripts", required: false)

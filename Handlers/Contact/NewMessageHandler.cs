@@ -29,7 +29,6 @@ namespace Handlers.Contact
 
             var contact = await _contactRepository.CreateAsync(request, cancellationToken);
 
-
             return contact.Match<OneOf<CreateContact.Response, ValidationError, DatabaseError>>(contact => new CreateContact.Response
             {
                 Id = contact.Id,
@@ -39,7 +38,6 @@ namespace Handlers.Contact
                 Message = contact.Message,
                 CreatedAt = contact.CreatedAt,
             }, error => new DatabaseError(error.Message));
-
         }
     }
 }

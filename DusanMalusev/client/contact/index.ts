@@ -6,8 +6,7 @@ import {Contact} from "./model";
 import {ContactValidationError, schema} from "./validation";
 import {ContactDto} from "./dto";
 
-const Swal = require('sweetalert2');
-
+import Swal from 'sweetalert2/dist/sweetalert2.js'
 
 const contact = async (dto: ContactDto): Promise<Contact | Err | ContactValidationError> => {
     try {
@@ -17,7 +16,7 @@ const contact = async (dto: ContactDto): Promise<Contact | Err | ContactValidati
 
         const token = await execute('contact');
 
-        const res = await http('/contact-me', HttpMethod.POST, dto, undefined, token);
+        const res = await http('/contact/new', HttpMethod.POST, dto, undefined, token);
 
         if (res.status >= 400) {
             throw {

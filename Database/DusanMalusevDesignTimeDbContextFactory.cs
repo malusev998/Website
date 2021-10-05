@@ -3,28 +3,34 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
 using Microsoft.Extensions.Configuration;
 
-namespace Database;
-
-public class DusanMalusevDesignTimeDbContextFactory : IDesignTimeDbContextFactory<DusanMalusevDbContext>
+namespace Database
 {
-    public DusanMalusevDbContext CreateDbContext(string[] args)
+
+    public class DusanMalusevDesignTimeDbContextFactory : IDesignTimeDbContextFactory<DusanMalusevDbContext>
     {
-        string environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
+        public DusanMalusevDbContext CreateDbContext(string[] args)
+        {
+            string? environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
 
+            if (environment is null)
+            {
+                throw new ArgumentNullException("ASPNETCORE_ENVIRONMENT cannot be null");
+            }
 
-        IConfigurationRoot configuration = new ConfigurationBuilder()
-            .SetBasePath(Path.Combine(Directory.GetCurrentDirectory(), "..", "DusanMalusev"))
-            .AddJsonFile("appsettings.json")
-             .AddJsonFile($"appsettings.{environment}.json", optional: true)
-            .AddEnvironmentVariables()
-            .Build();
+            IConfigurationRoot configuration = new ConfigurationBuilder()
+                .SetBasePath(Path.Combine(Directory.GetCurrentDirectory(), "..", "DusanMalusev"))
+                .AddJsonFile("appsettings.json")
+                 .AddJsonFile($"appsettings.{environment}.json", optional: true)
+                .AddEnvironmentVariables()
+                .Build();
 
-        var builder = new DbContextOptionsBuilder<DusanMalusevDbContext>();
+            var builder = new DbContextOptionsBuilder<DusanMalusevDbContext>();
 
-        var connectionString = configuration.GetConnectionString(ServiceProvider.ConnectionStringKey);
+            var connectionString = configuration.GetConnectionString(ServiceProvider.ConnectionStringKey);
 
-        ServiceProvider.AddDbContext(builder, connectionString, true);
+            ServiceProvider.AddDbContext(builder, connectionString, true);
 
-        return new DusanMalusevDbContext(builder.Options);
+            return new DusanMalusevDbContext(builder.Options);
+        }
     }
 }

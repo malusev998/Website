@@ -1,15 +1,15 @@
 using Database;
-using Repositories;
-using Validators;
-using Handlers;
-using RecaptchaV3;
-using Serilog;
-using Serilog.Events;
-using NodaTime;
 using DusanMalusev.Exceptions;
 using DusanMalusev.Middleware;
 using DusanMalusev.Options;
+using Handlers;
 using Microsoft.AspNetCore.HttpOverrides;
+using NodaTime;
+using RecaptchaV3;
+using Repositories;
+using Serilog;
+using Serilog.Events;
+using Validators;
 
 Log.Logger = new LoggerConfiguration()
     .MinimumLevel.Override("Microsoft", LogEventLevel.Information)
@@ -30,7 +30,7 @@ try
     );
 
     builder.Host.UseConsoleLifetime();
-    
+
     builder.WebHost.UseKestrel(options =>
     {
         options.AllowSynchronousIO = false;
@@ -48,17 +48,19 @@ try
 
     // Add services to the container.
     builder.Services.AddRazorPages();
-    
+
     builder.Services.AddControllers(options =>
     {
         options.Filters.Add<Handler>();
     });
-    
+
     builder.Services.AddOptions<CsrfCookie>()
-        .Bind(builder.Configuration.GetSection(CsrfCookie.Key));
-    
+        .Bind(builder.Configuration.GetSection(CsrfCookie.Key))
+        .ValidateDataAnnotations();
+
     builder.Services.AddOptions<ReCaptchaV3Settings>()
-        .Bind(builder.Configuration.GetSection("Google:ReCaptchaV3"));
+        .Bind(builder.Configuration.GetSection("Google:ReCaptchaV3"))
+        .ValidateDataAnnotations();
 
     builder.Services.AddSingleton<IClock>(_ => SystemClock.Instance);
 
@@ -82,7 +84,7 @@ try
         section.Bind(csrfCookieOptions);
 
         options.SuppressXFrameOptionsHeader = false;
-        
+
         options.Cookie.Domain = csrfCookieOptions.Domain;
         options.Cookie.Path = csrfCookieOptions.Path;
         options.Cookie.IsEssential = true;
@@ -97,7 +99,6 @@ try
 
     var app = builder.Build();
 
-
     // Configure the HTTP request pipeline.
     if (!app.Environment.IsDevelopment())
     {
@@ -111,12 +112,13 @@ try
         app.UseSerilogRequestLogging();
     }
 
+
     app.UseForwardedHeaders(new ForwardedHeadersOptions
     {
         ForwardedHeaders = ForwardedHeaders.XForwardedFor |
-                           ForwardedHeaders.XForwardedProto | 
+                           ForwardedHeaders.XForwardedProto |
                            ForwardedHeaders.XForwardedHost
-    });  
+    });
 
     app.UseMiddleware<CsrfMiddleware>();
 

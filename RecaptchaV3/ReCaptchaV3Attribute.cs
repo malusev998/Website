@@ -1,24 +1,24 @@
-﻿using System;
-using Microsoft.AspNetCore.Mvc.Filters;
+﻿using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
-namespace RecaptchaV3;
-
-[AttributeUsage(AttributeTargets.Class | AttributeTargets.Method)]
-public class ReCaptchaV3Attribute : Attribute, IFilterFactory
+namespace RecaptchaV3
 {
-    public bool IsReusable => false;
-
-    public float? Threshold = null;
-
-    public IFilterMetadata CreateInstance(IServiceProvider serviceProvider)
+    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method)]
+    public class ReCaptchaV3Attribute : Attribute, IFilterFactory
     {
-        var service = serviceProvider.GetRequiredService<IReCaptchaService>();
-        var options = serviceProvider.GetRequiredService<IOptions<ReCaptchaV3Settings>>().Value;
+        public bool IsReusable => true;
 
-        var header = options.HeaderName;
-        
-        return new ReCaptchaV3AuthorizationFilter(service, header, Threshold);
+        public float? Threshold = null;
+
+        public IFilterMetadata CreateInstance(IServiceProvider serviceProvider)
+        {
+            var service = serviceProvider.GetRequiredService<IReCaptchaService>();
+            var options = serviceProvider.GetRequiredService<IOptions<ReCaptchaV3Settings>>().Value;
+
+            var header = options.HeaderName;
+
+            return new ReCaptchaV3AuthorizationFilter(service, header, Threshold);
+        }
     }
 }

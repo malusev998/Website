@@ -1,35 +1,35 @@
-using System;
-using System.Net.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Polly;
 
-namespace RecaptchaV3;
-
-public static class ServiceProvider
+namespace RecaptchaV3
 {
-    internal const string ClientName = "ReCaptchaV3Client";
 
-    public static IServiceCollection AddReCaptchaV3(this IServiceCollection services, int retries = 3, int wait = 100)
+    public static class ServiceProvider
     {
-        services.AddHttpClient<IReCaptchaService, ReCaptchaV3Service>(ClientName, (provider, client) =>
-            {
-                var options = provider.GetRequiredService<IOptions<ReCaptchaV3Settings>>().Value;
+        internal const string ClientName = "ReCaptchaV3Client";
 
-                client.BaseAddress = new Uri(options.Url);
+        public static IServiceCollection AddReCaptchaV3(this IServiceCollection services, int retries = 3, int wait = 100)
+        {
+            services.AddHttpClient<IReCaptchaService, ReCaptchaV3Service>(ClientName, (provider, client) =>
+                {
+                    var options = provider.GetRequiredService<IOptions<ReCaptchaV3Settings>>().Value;
 
-                client.DefaultRequestHeaders.Add("User-Agent", options.UserAgent);
-                client.DefaultRequestHeaders.Add("Accept", "application/json");
-            })
-            .ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler
-            {
-                AllowAutoRedirect = false,
-                UseCookies = false,
-            })
-            .AddTransientHttpErrorPolicy(p =>
-                p.WaitAndRetryAsync(retries, _ => TimeSpan.FromMilliseconds(wait))
-            );
+                    client.BaseAddress = new Uri(options.Url);
 
-        return services;
+                    client.DefaultRequestHeaders.Add("User-Agent", options.UserAgent);
+                    client.DefaultRequestHeaders.Add("Accept", "application/json");
+                })
+                .ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler
+                {
+                    AllowAutoRedirect = false,
+                    UseCookies = false,
+                })
+                .AddTransientHttpErrorPolicy(p =>
+                    p.WaitAndRetryAsync(retries, _ => TimeSpan.FromMilliseconds(wait))
+                );
+
+            return services;
+        }
     }
 }

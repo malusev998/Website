@@ -1,6 +1,4 @@
-﻿using System;
-using System.Threading;
-using System.Threading.Tasks;
+﻿using System.Diagnostics.CodeAnalysis;
 using Database;
 using LanguageExt.Common;
 using Microsoft.EntityFrameworkCore;
@@ -10,45 +8,46 @@ using Repositories.Contracts;
 using Transfer.Contact;
 
 
-namespace Repositories.Impl;
-
-public class ContactRepository : IContactRepository
+namespace Repositories.Impl
 {
-    private readonly DusanMalusevDbContext _dbContext;
-    private readonly IClock _clock;
-
-    public ContactRepository(DusanMalusevDbContext dbContext, IClock clock)
+    public class ContactRepository : IContactRepository
     {
-        _dbContext = dbContext;
-        _clock = clock;
-    }
+        private readonly DusanMalusevDbContext _dbContext;
+        private readonly IClock _clock;
 
-    public async Task<Result<Contact>> CreateAsync(CreateContact.Request createContact, CancellationToken cancellationToken = default)
-    {
-        var contact = new Contact
+        public ContactRepository(DusanMalusevDbContext dbContext, IClock clock)
         {
-            Name = createContact.Name,
-            Email = createContact.Email,
-            Subject = createContact.Subject,
-            Message = createContact.Message,
-            CreatedAt = _clock.GetCurrentInstant().InUtc()
-        };
-
-
-        try
-        {
-            await _dbContext.AddAsync(contact, cancellationToken);
-
-            await _dbContext.SaveChangesAsync(cancellationToken);
-
-            return new Result<Contact>(contact);
+            _dbContext = dbContext;
+            _clock = clock;
         }
-        catch (OperationCanceledException e)
+
+        public async Task<Result<Contact>> CreateAsync([NotNull] CreateContact.Request createContact, CancellationToken cancellationToken = default)
         {
-            return new Result<Contact>(e);
-        }catch(DbUpdateException e)
-        {
-            return new Result<Contact>(e);
+            var contact = new Contact
+            {
+                Name = createContact.Name!,
+                Email = createContact.Email!,
+                Subject = createContact.Subject!,
+                Message = createContact.Message!,
+                CreatedAt = _clock.GetCurrentInstant().InUtc()
+            };
+
+            try
+            {
+                await _dbContext.AddAsync(contact, cancellationToken);
+
+                await _dbContext.SaveChangesAsync(cancellationToken);
+
+                return new Result<Contact>(contact);
+            }
+            catch (OperationCanceledException e)
+            {
+                return new Result<Contact>(e);
+            }
+            catch (DbUpdateException e)
+            {
+                return new Result<Contact>(e);
+            }
         }
     }
 }

@@ -1,52 +1,53 @@
 using System.Net;
-using Microsoft.Extensions.Options;
 using System.Text.Json;
+using Microsoft.Extensions.Options;
 using RecaptchaV3.Internal;
 
-namespace RecaptchaV3;
-
-public class ReCaptchaV3Service : IReCaptchaService
+namespace RecaptchaV3
 {
-    private readonly HttpClient _client;
-    private readonly ReCaptchaV3Settings _settings;
-
-    public ReCaptchaV3Service(HttpClient client, IOptions<ReCaptchaV3Settings> options)
+    public class ReCaptchaV3Service : IReCaptchaService
     {
-        _client = client;
-        _settings = options.Value;
-    }
+        private readonly HttpClient _client;
+        private readonly ReCaptchaV3Settings _settings;
 
-    public async Task<bool> VerifyAsync(string token, string? ip = null, float? score = null, CancellationToken cancellationToken = default)
-    {
-        var threshold = score ?? _settings.Threshold;
-
-        var items = new List<KeyValuePair<string, string>>
+        public ReCaptchaV3Service(HttpClient client, IOptions<ReCaptchaV3Settings> options)
         {
-            new("secret", _settings.SecretKey),
-            new("response", token),
-        };
-
-        if (!string.IsNullOrWhiteSpace(ip))
-        {
-            items.Add(new KeyValuePair<string, string>("remoteip", ip!));
+            _client = client;
+            _settings = options.Value;
         }
 
-        var content = new FormUrlEncodedContent(items);
-
-        var response = await _client.PostAsync("", content, cancellationToken);
-
-        if (response is not { StatusCode: HttpStatusCode.OK })
-            return false;
-
-        var bodyStream = await response.Content.ReadAsStreamAsync();
-
-        var recaptcha = await JsonSerializer.DeserializeAsync<Response>(bodyStream, cancellationToken: cancellationToken);
-
-        if (!recaptcha!.Success && (recaptcha.Errors == null || recaptcha.Errors.Length == 0) && recaptcha.Score >= threshold)
+        public async Task<bool> VerifyAsync(string token, string? ip = null, float? score = null, CancellationToken cancellationToken = default)
         {
-            return true;
-        }
+            var threshold = score ?? _settings.Threshold;
 
-        return recaptcha!.Success && !(recaptcha.Score < threshold);
+            var items = new List<KeyValuePair<string, string>>
+            {
+                new("secret", _settings.SecretKey),
+                new("response", token),
+            };
+
+            if (!string.IsNullOrWhiteSpace(ip))
+            {
+                items.Add(new KeyValuePair<string, string>("remoteip", ip!));
+            }
+
+            var content = new FormUrlEncodedContent(items);
+
+            var response = await _client.PostAsync(string.Empty, content, cancellationToken);
+
+            if (response is not { StatusCode: HttpStatusCode.OK })
+                return false;
+
+            var bodyStream = await response.Content.ReadAsStreamAsync();
+
+            var recaptcha = await JsonSerializer.DeserializeAsync<Response>(bodyStream, cancellationToken: cancellationToken);
+
+            if (!recaptcha!.Success && (recaptcha.Errors == null || recaptcha.Errors.Length == 0) && recaptcha.Score >= threshold)
+            {
+                return true;
+            }
+
+            return recaptcha!.Success && !(recaptcha.Score < threshold);
+        }
     }
 }

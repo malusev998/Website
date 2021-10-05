@@ -4,3 +4,4 @@ client/*.css
 client/**/*.map
 Logs/*.jsonl
 .parcel-cache
+.env

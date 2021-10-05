@@ -1,22 +1,23 @@
 ﻿using Microsoft.AspNetCore.Antiforgery;
 using Microsoft.AspNetCore.Mvc;
 
-namespace DusanMalusev.Controllers;
-
-[Route("csrf-token")]
-[ApiController]
-public class CsrfTokenController : Controller
+namespace DusanMalusev.Controllers
 {
-    private readonly IAntiforgery _csrf;
-
-    public CsrfTokenController(IAntiforgery csrf)
+    [Route("csrf-token")]
+    [ApiController]
+    public class CsrfTokenController : Controller
     {
-        _csrf = csrf;
+        private readonly IAntiforgery _csrf;
+
+        public CsrfTokenController(IAntiforgery csrf)
+        {
+            _csrf = csrf;
+        }
+
+        [HttpGet]
+        public IActionResult Index() => Ok(new
+        {
+            Token = _csrf.GetTokens(HttpContext)?.RequestToken
+        });
     }
-
-    [HttpGet]
-    public IActionResult Index() => Ok(new
-    {
-        Token = _csrf.GetTokens(HttpContext)?.RequestToken
-    });
 }

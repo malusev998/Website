@@ -11,7 +11,7 @@
   "author": "Dusan Malusev",
   "license": "MIT",
   "dependencies": {
-    "@sweetalert2/theme-dark": "^4.0.1",
+    "@sweetalert2/theme-dark": "^4.0.5",
     "autoprefixer": "^10.1.0",
     "css.gg": "^2.0.0",
     "js-cookie": "^3.0.1",
@@ -23,6 +23,7 @@
     "yup": "^0.32.8"
   },
   "devDependencies": {
+    "@types/gtag.js": "^0.0.7",
     "@types/yup": "^0.29.11",
     "cross-env": "^7.0.3",
     "postcss": "^8.2.1",

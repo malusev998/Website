@@ -1,4 +1,5 @@
-﻿using FluentValidation;
+﻿using Errors;
+using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 
@@ -52,7 +53,9 @@ namespace DusanMalusev.Exceptions
 
         protected ObjectResult HandleValidationException(ValidationException exception)
         {
-            return new UnprocessableEntityObjectResult(exception.Errors);
+            var validationError = new ValidationError(exception.Errors);
+
+            return new UnprocessableEntityObjectResult(validationError.FirstOfAll());
         }
     }
 }

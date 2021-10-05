@@ -1,11 +1,12 @@
-﻿namespace Errors;
-
-public struct DatabaseError
+﻿namespace Errors
 {
-    public string Message { get; set; }
-    
-    public DatabaseError(string message)
+    public struct DatabaseError
     {
-        Message = message;
+        public string Message { get; set; }
+
+        public DatabaseError(string message)
+        {
+            Message = message;
+        }
     }
 }

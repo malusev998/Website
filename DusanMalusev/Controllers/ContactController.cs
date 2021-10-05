@@ -3,31 +3,32 @@ using Microsoft.AspNetCore.Mvc;
 using RecaptchaV3;
 using Transfer.Contact;
 
-namespace DusanMalusev.Controllers;
-
-[Route("api/contact-me")]
-[ApiController]
-public class ContactController : Controller
+namespace DusanMalusev.Controllers
 {
-    private readonly ISender _sender;
-
-    public ContactController(ISender sender)
+    [Route("api/contact")]
+    [ApiController]
+    public class ContactController : ControllerBase
     {
-        _sender = sender;
-    }
+        private readonly ISender _sender;
 
-    [HttpPost]
-    [Route("")]
-    [ReCaptchaV3]
-    [ValidateAntiForgeryToken]
-    public async Task<IActionResult> MessageMe([FromBody] CreateContact.Request createContact)
-    {
-        var response = await _sender.Send(createContact);
+        public ContactController(ISender sender)
+        {
+            _sender = sender;
+        }
 
-        return response.Match<IActionResult>(
-            contact => Created("/api/contact-me", contact),
-            validation => UnprocessableEntity(validation),
-            databaseError => StatusCode(StatusCodes.Status500InternalServerError)
-        );
+        [HttpPost]
+        [Route("new")]
+        [ReCaptchaV3]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> MessageMe([FromBody] CreateContact.Request createContact)
+        {
+            var response = await _sender.Send(createContact);
+
+            return response.Match<IActionResult>(
+                contact => Created("/api/contact/new", contact),
+                validation => UnprocessableEntity(validation.FirstOfAll()),
+                databaseError => StatusCode(StatusCodes.Status500InternalServerError)
+            );
+        }
     }
 }

@@ -1,61 +1,62 @@
 ﻿using System.Text.Json;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Filters;
 
-namespace RecaptchaV3;
-
-public class ReCaptchaV3AuthorizationFilter : IAsyncActionFilter
+namespace RecaptchaV3
 {
-    private readonly IReCaptchaService _service;
-    private readonly float? _threshold;
-    private readonly string _headerName;
-
-    public ReCaptchaV3AuthorizationFilter(IReCaptchaService service, string headerName, float? threshold)
+    public class ReCaptchaV3AuthorizationFilter : IAsyncActionFilter
     {
-        _service = service;
-        _threshold = threshold;
-        _headerName = headerName;
-    }
+        private readonly IReCaptchaService _service;
+        private readonly float? _threshold;
+        private readonly string _headerName;
 
-
-    public async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
-    {
-        var method = context.HttpContext.Request.Method;
-
-        var succeeded = context.HttpContext.Request.Headers.TryGetValue(_headerName, out var values);
-
-        if (!succeeded || values.Count != 1)
+        public ReCaptchaV3AuthorizationFilter(IReCaptchaService service, string headerName, float? threshold)
         {
-            context.Result = new ContentResult
-            {
-                Content = JsonSerializer.Serialize(new { message = $"{_headerName} has not been sent" }),
-                ContentType = "application/json",
-                StatusCode = StatusCodes.Status428PreconditionRequired
-            };
-            return;
+            _service = service;
+            _threshold = threshold;
+            _headerName = headerName;
         }
 
-        var token = values[0];
-
-        var ip = context.HttpContext.Connection.RemoteIpAddress.ToString();
-
-        var result = await _service.VerifyAsync(
-            token, ip,
-            _threshold,
-            context.HttpContext.RequestAborted
-        );
-
-        if (!result)
+        public async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
         {
-            context.Result = new ContentResult
-            {
-                Content = JsonSerializer.Serialize(new { message = "Invalid ReCaptcha" }),
-                ContentType = "application/json",
-                StatusCode = StatusCodes.Status428PreconditionRequired
-            };
-        }
+            var succeeded = context.HttpContext.Request.Headers.TryGetValue(_headerName, out var values);
 
-        await next();
+            if (!succeeded || values.Count != 1)
+            {
+                context.Result = new ContentResult
+                {
+                    Content = JsonSerializer.Serialize(new { message = $"{_headerName} has not been sent" }),
+                    ContentType = "application/json",
+                    StatusCode = StatusCodes.Status428PreconditionRequired
+                };
+                return;
+            }
+
+            var token = values[0];
+
+            var ip = context.HttpContext.Connection.RemoteIpAddress.ToString();
+
+            var result = await _service.VerifyAsync(
+                token,
+                ip,
+                _threshold,
+                context.HttpContext.RequestAborted
+            );
+
+            if (!result)
+            {
+                context.Result = new ContentResult
+                {
+                    Content = JsonSerializer.Serialize(new { message = "Invalid ReCaptcha" }),
+                    ContentType = "application/json",
+                    StatusCode = StatusCodes.Status428PreconditionRequired
+                };
+
+                return;
+            }
+
+            await next();
+        }
     }
 }

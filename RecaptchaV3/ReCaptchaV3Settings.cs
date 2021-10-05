@@ -1,14 +1,25 @@
-namespace RecaptchaV3;
+using System.ComponentModel.DataAnnotations;
 
-public class ReCaptchaV3Settings
+namespace RecaptchaV3
 {
-    public string SecretKey { get; set; }
+    public class ReCaptchaV3Settings
+    {
+        [Required]
+        public string SecretKey { get; set; }
 
-    public string Url { get; set; }
+        [Required]
+        public string PublicKey { get; set; }
 
-    public string UserAgent { get; set; }
+        [Required]
+        public string Url { get; set; }
 
-    public string HeaderName { get; set; }
-    
-    public float Threshold { get; set; }
+        [Required]
+        public string UserAgent { get; set; }
+
+        [Required]
+        public string HeaderName { get; set; }
+
+        [Required]
+        public float Threshold { get; set; }
+    }
 }
