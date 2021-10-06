@@ -20,7 +20,7 @@ namespace Database
             IConfigurationRoot configuration = new ConfigurationBuilder()
                 .SetBasePath(Path.Combine(Directory.GetCurrentDirectory(), "..", "DusanMalusev"))
                 .AddJsonFile("appsettings.json")
-                 .AddJsonFile($"appsettings.{environment}.json", optional: true)
+                .AddJsonFile($"appsettings.{environment}.json", optional: true)
                 .AddEnvironmentVariables()
                 .Build();
 

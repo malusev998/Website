@@ -18,3 +18,14 @@ endif
 .PHONY: migration-bundle
 migration-bundle:
 	cd Database && dotnet ef migrations bundle --project . --self-contained true -f --target-configuration Release
+
+.PHONY: create-certificate
+create-certificate:
+	openssl req -x509 -sha256 -nodes -days 365 \
+	-newkey rsa:4096 \
+	-keyout private.key \
+	-out certificate.crt
+	openssl pkcs12 \
+	-export -in certificate.crt -inkey private.key \
+	-out DusanMalusev/certificate.pfx
+	rm -f certificate.crt private.key

@@ -1,8 +1,13 @@
+using System.Security.Cryptography.X509Certificates;
 using Database;
 using DusanMalusev.Exceptions;
 using DusanMalusev.Middleware;
 using DusanMalusev.Options;
 using Handlers;
+using LanguageExt;
+using Microsoft.AspNetCore.DataProtection;
+using Microsoft.AspNetCore.DataProtection.AuthenticatedEncryption;
+using Microsoft.AspNetCore.DataProtection.AuthenticatedEncryption.ConfigurationModel;
 using Microsoft.AspNetCore.HttpOverrides;
 using NodaTime;
 using RecaptchaV3;
@@ -22,6 +27,21 @@ var builder = WebApplication.CreateBuilder(args);
 
 try
 {
+    builder.Host.ConfigureHostConfiguration(config =>
+    {
+        config.AddEnvironmentVariables(env =>
+        {
+            env.Prefix = "MALUSEV";
+        });
+
+        if (builder.Environment.IsProduction())
+        {
+            config.SetBasePath("/etc/dusanmalusev");
+
+            config.AddJsonFile("appsettings.json", false, true);
+        }
+    });
+
     builder.Host.UseSerilog((context, services, configuration) => configuration
         .ReadFrom.Configuration(context.Configuration)
         .ReadFrom.Services(services)
@@ -31,22 +51,16 @@ try
 
     builder.Host.UseConsoleLifetime();
 
-    builder.WebHost.UseKestrel(options =>
-    {
-        options.AllowSynchronousIO = false;
-        options.DisableStringReuse = false;
-        options.AddServerHeader = false;
-    });
-
-    builder.Host.ConfigureHostConfiguration(host =>
-    {
-        host.AddEnvironmentVariables(env =>
-        {
-            env.Prefix = "MALUSEV";
-        });
-    });
 
     // Add services to the container.
+    builder.Services.AddDataProtection()
+        .PersistKeysToFileSystem(new DirectoryInfo(builder.Configuration["Keys:StoragePath"]))
+        .ProtectKeysWithCertificate(new X509Certificate2(builder.Configuration["Keys:Certificate:Path"], builder.Configuration["Keys:Certificate:Password"]))
+        .UseCryptographicAlgorithms(new AuthenticatedEncryptorConfiguration()
+        {
+            EncryptionAlgorithm = builder.Environment.IsDevelopment() ? EncryptionAlgorithm.AES_256_CBC : EncryptionAlgorithm.AES_256_GCM,
+            ValidationAlgorithm = ValidationAlgorithm.HMACSHA512,
+        });
     builder.Services.AddRazorPages();
 
     builder.Services.AddControllers(options =>
@@ -89,7 +103,7 @@ try
         options.Cookie.Path = csrfCookieOptions.Path;
         options.Cookie.IsEssential = true;
         options.Cookie.SecurePolicy = csrfCookieOptions.Secure ? CookieSecurePolicy.Always : CookieSecurePolicy.SameAsRequest;
-        options.Cookie.HttpOnly = false;
+        options.Cookie.HttpOnly = true;
         options.Cookie.MaxAge = TimeSpan.FromMinutes(csrfCookieOptions.ExpireIn);
         options.Cookie.SameSite = SameSiteMode.Strict;
 
@@ -117,7 +131,7 @@ try
     {
         ForwardedHeaders = ForwardedHeaders.XForwardedFor |
                            ForwardedHeaders.XForwardedProto |
-                           ForwardedHeaders.XForwardedHost
+                           ForwardedHeaders.XForwardedHost,
     });
 
     app.UseMiddleware<CsrfMiddleware>();
