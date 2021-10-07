@@ -6,6 +6,10 @@ namespace Database;
 public class DusanMalusevDbContext : DbContext
 {
     public DbSet<Contact> Contacts { get; set; }
+    
+    public DbSet<Subscription> Subscriptions { get; set; }
+    
+    // public DbSet<Visit> Visits { get; set; }
 
     public DusanMalusevDbContext(DbContextOptions<DusanMalusevDbContext> options)
         : base(options)
@@ -16,6 +20,8 @@ public class DusanMalusevDbContext : DbContext
     {
         builder.HasPostgresExtension("pg_stat_statements");
         builder.HasPostgresExtension("hstore");
+
+        builder.HasPostgresEnum<VisitProvider>();
 
         builder.UseIdentityColumns();
         builder.UseHiLo();

@@ -2,7 +2,7 @@
 
 namespace Errors
 {
-    public class ValidationError
+    public class ValidationError : Exception
     {
         public IEnumerable<ValidationFailure> Errors { get; set; }
 

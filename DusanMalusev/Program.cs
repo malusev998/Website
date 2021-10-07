@@ -1,10 +1,13 @@
 using System.Security.Cryptography.X509Certificates;
+using Cache;
+using Crypto;
 using Database;
 using DusanMalusev.Exceptions;
 using DusanMalusev.Middleware;
 using DusanMalusev.Options;
+using DusanMalusev.Sessions;
 using Handlers;
-using LanguageExt;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.DataProtection.AuthenticatedEncryption;
 using Microsoft.AspNetCore.DataProtection.AuthenticatedEncryption.ConfigurationModel;
@@ -12,6 +15,7 @@ using Microsoft.AspNetCore.HttpOverrides;
 using NodaTime;
 using RecaptchaV3;
 using Repositories;
+using Serializers;
 using Serilog;
 using Serilog.Events;
 using Validators;
@@ -29,17 +33,12 @@ try
 {
     builder.Host.ConfigureHostConfiguration(config =>
     {
-        config.AddEnvironmentVariables(env =>
-        {
-            env.Prefix = "MALUSEV";
-        });
+        config.AddEnvironmentVariables(env => { env.Prefix = "MALUSEV"; });
 
-        if (builder.Environment.IsProduction())
-        {
-            config.SetBasePath("/etc/dusanmalusev");
+        if (!builder.Environment.IsProduction()) return;
 
-            config.AddJsonFile("appsettings.json", false, true);
-        }
+        config.SetBasePath("/etc/dusanmalusev");
+        config.AddJsonFile("appsettings.json", false, true);
     });
 
     builder.Host.UseSerilog((context, services, configuration) => configuration
@@ -51,14 +50,18 @@ try
 
     builder.Host.UseConsoleLifetime();
 
-
     // Add services to the container.
     builder.Services.AddDataProtection()
         .PersistKeysToFileSystem(new DirectoryInfo(builder.Configuration["Keys:StoragePath"]))
-        .ProtectKeysWithCertificate(new X509Certificate2(builder.Configuration["Keys:Certificate:Path"], builder.Configuration["Keys:Certificate:Password"]))
-        .UseCryptographicAlgorithms(new AuthenticatedEncryptorConfiguration()
+        .ProtectKeysWithCertificate(new X509Certificate2(
+            builder.Configuration["Keys:Certificate:Path"],
+            builder.Configuration["Keys:Certificate:Password"])
+        )
+        .UseCryptographicAlgorithms(new AuthenticatedEncryptorConfiguration
         {
-            EncryptionAlgorithm = builder.Environment.IsDevelopment() ? EncryptionAlgorithm.AES_256_CBC : EncryptionAlgorithm.AES_256_GCM,
+            EncryptionAlgorithm = builder.Environment.IsDevelopment()
+                ? EncryptionAlgorithm.AES_256_CBC
+                : EncryptionAlgorithm.AES_256_GCM,
             ValidationAlgorithm = ValidationAlgorithm.HMACSHA512,
         });
     builder.Services.AddRazorPages();
@@ -66,6 +69,8 @@ try
     builder.Services.AddControllers(options =>
     {
         options.Filters.Add<Handler>();
+        options.RespectBrowserAcceptHeader = true;
+        options.ReturnHttpNotAcceptable = true;
     });
 
     builder.Services.AddOptions<CsrfCookie>()
@@ -76,40 +81,40 @@ try
         .Bind(builder.Configuration.GetSection("Google:ReCaptchaV3"))
         .ValidateDataAnnotations();
 
-    builder.Services.AddSingleton<IClock>(_ => SystemClock.Instance);
-
-    builder.Services.AddDatabase(
-       builder.Configuration.GetConnectionString(Database.ServiceProvider.ConnectionStringKey),
-       builder.Configuration.GetValue<bool>("Postgres:Development"),
-       builder.Configuration.GetValue<int>("Postgres:MinBatchSize"),
-       builder.Configuration.GetValue<int>("Postgres:MaxBatchSize")
-   ).AddRepositories();
-
-    builder.Services
+    builder.Services.AddSingleton<IClock>(_ => SystemClock.Instance)
+        .AddDatabase(
+            builder.Configuration.GetConnectionString(Database.ServiceProvider.ConnectionStringKey),
+            builder.Configuration.GetValue<bool>("Postgres:Development"),
+            builder.Configuration.GetValue<int>("Postgres:MinBatchSize"),
+            builder.Configuration.GetValue<int>("Postgres:MaxBatchSize")
+        ).AddRepositories()
         .AddValidators()
-        .AddMediatr();
+        .AddMediatr()
+        .AddReCaptchaV3()
+        .AddCrypto()
+        .AddSerializers()
+        .AddRedisCache()
+        .AddSingleton<ITicketStore, DistributedSessionStore>()
+        .AddAntiforgery(options =>
+        {
+            var section = builder.Configuration.GetRequiredSection(CsrfCookie.Key);
+            var csrfCookieOptions = new CsrfCookie();
+            section.Bind(csrfCookieOptions);
 
-    builder.Services.AddReCaptchaV3();
+            options.SuppressXFrameOptionsHeader = false;
 
-    builder.Services.AddAntiforgery(options =>
-    {
-        var section = builder.Configuration.GetRequiredSection(CsrfCookie.Key);
-        var csrfCookieOptions = new CsrfCookie();
-        section.Bind(csrfCookieOptions);
+            options.Cookie.Domain = csrfCookieOptions.Domain;
+            options.Cookie.Path = csrfCookieOptions.Path;
+            options.Cookie.IsEssential = true;
+            options.Cookie.SecurePolicy =
+                csrfCookieOptions.Secure ? CookieSecurePolicy.Always : CookieSecurePolicy.SameAsRequest;
+            options.Cookie.HttpOnly = true;
+            options.Cookie.MaxAge = TimeSpan.FromMinutes(csrfCookieOptions.ExpireIn);
+            options.Cookie.SameSite = SameSiteMode.Strict;
 
-        options.SuppressXFrameOptionsHeader = false;
-
-        options.Cookie.Domain = csrfCookieOptions.Domain;
-        options.Cookie.Path = csrfCookieOptions.Path;
-        options.Cookie.IsEssential = true;
-        options.Cookie.SecurePolicy = csrfCookieOptions.Secure ? CookieSecurePolicy.Always : CookieSecurePolicy.SameAsRequest;
-        options.Cookie.HttpOnly = true;
-        options.Cookie.MaxAge = TimeSpan.FromMinutes(csrfCookieOptions.ExpireIn);
-        options.Cookie.SameSite = SameSiteMode.Strict;
-
-        options.HeaderName = csrfCookieOptions.HeaderName;
-        options.FormFieldName = csrfCookieOptions.FieldName;
-    });
+            options.HeaderName = csrfCookieOptions.HeaderName;
+            options.FormFieldName = csrfCookieOptions.FieldName;
+        });
 
     var app = builder.Build();
 

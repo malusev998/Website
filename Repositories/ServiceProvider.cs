@@ -8,14 +8,20 @@ namespace Repositories
     {
         public static IServiceCollection AddRepositories(this IServiceCollection services)
         {
-            return AddContactRepository(services);
+            return services
+                .AddContactRepository()
+                .AddSubscriptionRepository();
         }
 
-        public static IServiceCollection AddContactRepository(this IServiceCollection servies)
+        private static IServiceCollection AddContactRepository(this IServiceCollection services)
         {
-            return servies
-                .AddScoped<IContactRepository, ContactRepository>()
-                .AddScoped<ISubscriptionRepository, SubscriptionRepository>();
+            return services
+                .AddScoped<IContactRepository, ContactRepository>();
+        }
+
+        private static IServiceCollection AddSubscriptionRepository(this IServiceCollection services)
+        {
+            return services.AddScoped<ISubscriptionRepository, SubscriptionRepository>();
         }
     }
 }
