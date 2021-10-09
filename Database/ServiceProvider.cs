@@ -19,18 +19,20 @@ public static class ServiceProvider
 
     internal static void AddDbContext(DbContextOptionsBuilder builder, string connectionString, bool isDevelopment, int minBatchSize = 10, int maxBatchSize = 100)
     {
-        builder.EnableDetailedErrors(isDevelopment);
-            builder.EnableSensitiveDataLogging(isDevelopment);
-            builder.EnableServiceProviderCaching(isDevelopment);
-            builder.EnableThreadSafetyChecks(!isDevelopment);
-            builder.UseSnakeCaseNamingConvention();
-            builder.UseNpgsql(connectionString, options =>
+        builder.EnableDetailedErrors(isDevelopment)
+            .EnableSensitiveDataLogging(isDevelopment)
+            .EnableServiceProviderCaching(isDevelopment)
+            .EnableThreadSafetyChecks(!isDevelopment)
+            .UseSnakeCaseNamingConvention()
+            .UseNpgsql(connectionString, options =>
             {
                 options.EnableRetryOnFailure(3);
                 options.MaxBatchSize(maxBatchSize);
                 options.MinBatchSize(minBatchSize);
                 // options.SetPostgresVersion(new Version(13, 0));
                 options.UseNodaTime();
-            });
+            })
+            .UseModel(DusanMalusevDbContextModel.Instance);
+
     }
 }

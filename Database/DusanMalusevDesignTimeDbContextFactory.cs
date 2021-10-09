@@ -4,7 +4,6 @@ using Microsoft.Extensions.Configuration;
 
 namespace Database
 {
-
     public class DusanMalusevDesignTimeDbContextFactory : IDesignTimeDbContextFactory<DusanMalusevDbContext>
     {
         public DusanMalusevDbContext CreateDbContext(string[] args)
@@ -15,9 +14,15 @@ namespace Database
             {
                 throw new ArgumentNullException("ASPNETCORE_ENVIRONMENT cannot be null");
             }
+            
+            var path = environment switch {
+                "Development" => Path.Combine(Directory.GetCurrentDirectory(), "..", "DusanMalusev"),
+                "Production" => Path.Combine("etc", "dusanmalusev"),
+                _ => throw new Exception("Invalid ASPNETCORE_ENVIRONMENT")
+            };
 
-            IConfigurationRoot configuration = new ConfigurationBuilder()
-                .SetBasePath(Path.Combine(Directory.GetCurrentDirectory(), "..", "DusanMalusev"))
+            var configuration = new ConfigurationBuilder()
+                .SetBasePath(path)
                 .AddJsonFile("appsettings.json")
                 .AddJsonFile($"appsettings.{environment}.json", optional: true)
                 .AddEnvironmentVariables()

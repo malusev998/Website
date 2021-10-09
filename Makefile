@@ -1,31 +1,49 @@
-SELF_CONTAINED ?= 0
-RUNTIME ?= osx.11.0-x64
-.PHONY: build-prod
-build-prod:
-ifeq ($(SELF_CONTAINED), 1)
-	dotnet build --self-contained true -c Release --nologo --no-restore -r $(RUNTIME)  -p:PublishReadyToRun=true
-else
-	dotnet build -c Release --nologo --no-restore
-endif
+RUNTIME ?= linux-x64
+CONF = Release
 
-publish:
-ifeq ($(SELF_CONTAINED), 1)
-	dotnet publish --self-contained true -c Release --nologo --no-restore -r $(RUNTIME)  -p:UseAppHost=false  -p:PublishReadyToRun=true
-else
-	dotnet publish -c Release --nologo --no-restore -p:UseAppHost=false
-endif
+BIN_DIR = DusanMalusev/bin/Release/net6.0/$(RUNTIME)
+
+.PHONY: build-prod
+build: restore
+	@dotnet build -c $(CONF) --nologo --no-restore -p:MyRuntimeIdentifier=$(RUNTIME) -p:PublishReadyToRun=false
+
+.PHONY: publish
+publish: restore
+	@dotnet publish -c $(CONF) --nologo --no-restore -p:MyRuntimeIdentifier=$(RUNTIME) -p:PublishReadyToRun=false
+	@cd $(BIN_DIR) && tar -zcvf /home/dmalusev/Desktop/DusanMaluser.tar.gz publish
+.PHONY: migrate
+migrate:
+	@dotnet ef database update --project Database
+
+.PHONY: restore
+restore:
+	@dotnet restore -r $(RUNTIME)
+
+.PHONY: drop
+drop:
+	@dotnet ef database drop --project Database --no-build
+
+.PHONY: models-compiled
+models-compiled:
+	@dotnet ef dbcontext optimize --project Database
 
 .PHONY: migration-bundle
 migration-bundle:
-	cd Database && dotnet ef migrations bundle --project . --self-contained true -f --target-configuration Release
+	@cd Database && dotnet ef migrations bundle --project . --self-contained true -f --target-configuration $(CONF)
 
-.PHONY: create-certificate
-create-certificate:
-	openssl req -x509 -sha256 -nodes -days 365 \
+.PHONY: certificate
+certificate:
+	@openssl req -x509 -sha256 -nodes -days 365 \
 		-newkey rsa:4096 \
 		-keyout private.key \
 		-out certificate.crt
-	openssl pkcs12 \
+	@openssl pkcs12 \
 		-export -in certificate.crt -inkey private.key \
 		-out DusanMalusev/certificate.pfx
-	rm -f certificate.crt private.key
+	@rm -f certificate.crt private.key
+
+.PHONY: clean
+clean:
+	rm -rf DusanMalusev/Logs/
+	dotnet clean -c Debug
+	dotnet clean -c $(CONF)
