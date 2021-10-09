@@ -7,5 +7,7 @@ namespace Repositories.Contracts
     public interface ISubscriptionRepository
     {
         Task<Result<Subscription>> CreateAsync(CreateSubscriber.Request createContact, CancellationToken cancellationToken = default);
+
+        Task<Result<int>> DeleteAsync(int id, CancellationToken token = default);
     }
 }

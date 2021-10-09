@@ -19,7 +19,8 @@ namespace Repositories.Impl
             _clock = clock;
         }
 
-        public async Task<Result<Subscription>> CreateAsync(CreateSubscriber.Request createSubscriber, CancellationToken cancellationToken = default)
+        public async Task<Result<Subscription>> CreateAsync(CreateSubscriber.Request createSubscriber,
+            CancellationToken cancellationToken = default)
         {
             var subscription = new Subscription
             {
@@ -42,6 +43,28 @@ namespace Repositories.Impl
             catch (DbUpdateException e)
             {
                 return new Result<Subscription>(e);
+            }
+        }
+
+        public async Task<Result<int>> DeleteAsync(int id, CancellationToken token = default)
+        {
+            try
+            {
+                var sub = new Subscription { Id = id };
+
+                _dbContext.Subscriptions.Remove(sub);
+
+                var rowCount = await _dbContext.SaveChangesAsync(token);
+
+                return new Result<int>(rowCount);
+            }
+            catch (OperationCanceledException e)
+            {
+                return new Result<int>(e);
+            }
+            catch (DbUpdateException e)
+            {
+                return new Result<int>(e);
             }
         }
     }
