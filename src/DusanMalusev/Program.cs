@@ -31,6 +31,20 @@ var builder = WebApplication.CreateBuilder(args);
 
 try
 {
+    builder.Host.UseDefaultServiceProvider((context, options) =>
+    {
+        if (context.HostingEnvironment.IsDevelopment())
+        {
+            options.ValidateOnBuild = true;
+            options.ValidateScopes = true;
+        }
+        else
+        {
+            options.ValidateOnBuild = false;
+            options.ValidateScopes = false;
+        }
+    });
+
     builder.Host.ConfigureHostConfiguration(config =>
     {
         config.AddEnvironmentVariables(env => { env.Prefix = "MALUSEV"; });
@@ -49,6 +63,7 @@ try
     );
 
     builder.Host.UseConsoleLifetime();
+
 
     // Add services to the container.
     builder.Services.AddDataProtection()
@@ -82,6 +97,10 @@ try
         .ValidateDataAnnotations();
 
     builder.Services.AddSingleton<IClock>(_ => SystemClock.Instance)
+        .AddRedisCache(
+            builder.Configuration.GetConnectionString("DefaultRedis"),
+            builder.Configuration.GetConnectionString("CacheRedis")
+        )
         .AddDatabase(
             builder.Configuration.GetConnectionString(Database.ServiceProvider.ConnectionStringKey),
             builder.Configuration.GetValue<bool>("Postgres:Development"),
@@ -93,7 +112,6 @@ try
         .AddReCaptchaV3()
         .AddCrypto()
         .AddSerializers()
-        .AddRedisCache()
         .AddSingleton<ITicketStore, DistributedSessionStore>()
         .AddAntiforgery(options =>
         {

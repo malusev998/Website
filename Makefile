@@ -1,6 +1,6 @@
-RUNTIME ?= linux-x64
+RUNTIME ?= osx-x64
 CONF = Release
-
+OUT_DIR=$(PWD)
 BIN_DIR = DusanMalusev/bin/Release/net6.0/$(RUNTIME)
 
 .PHONY: build-prod
@@ -10,7 +10,7 @@ build: restore
 .PHONY: publish
 publish: restore
 	@dotnet publish -c $(CONF) --nologo --no-restore -p:MyRuntimeIdentifier=$(RUNTIME) -p:PublishReadyToRun=false
-	@cd $(BIN_DIR) && tar -zcvf /home/dmalusev/Desktop/DusanMaluser.tar.gz publish
+	@cd $(BIN_DIR) && tar -zcvf $(OUT_DIR)/DusanMaluser.tar.gz publish
 .PHONY: migrate
 migrate:
 	@dotnet ef database update --project Database
