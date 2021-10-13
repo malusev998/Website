@@ -22,9 +22,9 @@ namespace DusanMalusev.Controllers
         [Route("new")]
         [ReCaptchaV3]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> MessageMe([FromBody] CreateContact.Request createContact)
+        public async Task<IActionResult> MessageMe([FromBody] CreateContact.Request createContact, CancellationToken cancellationToken)
         {
-            var response = await _sender.Send(createContact);
+            var response = await _sender.Send(createContact, cancellationToken);
 
             return response.Match<IActionResult>(
                 contact => Created("/api/contact/new", contact),

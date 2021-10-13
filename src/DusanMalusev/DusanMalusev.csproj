@@ -50,4 +50,9 @@
     <ProjectReference Include="..\Transfer\Transfer.csproj" />
     <ProjectReference Include="..\Validators\Validators.csproj" />
   </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="certificate.pfx" />
+    <Content Include="certificate.pfx" />
+  </ItemGroup>
 </Project>

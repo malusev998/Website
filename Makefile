@@ -10,7 +10,7 @@ build: restore
 .PHONY: publish
 publish: restore
 	@dotnet publish -c $(CONF) --nologo --no-restore -p:MyRuntimeIdentifier=$(RUNTIME) -p:PublishReadyToRun=false
-	@cd $(BIN_DIR) && tar -zcvf $(OUT_DIR)/DusanMaluser.tar.gz publish
+	@cd $(BIN_DIR) && tar -zcvf $(OUT_DIR)/DusanMalusev.tar.gz publish
 .PHONY: migrate
 migrate:
 	@dotnet ef database update --project Database
@@ -39,7 +39,8 @@ certificate:
 		-out certificate.crt
 	@openssl pkcs12 \
 		-export -in certificate.crt -inkey private.key \
-		-out DusanMalusev/certificate.pfx
+		-out src/DusanMalusev/certificate.pfx
+	@cp tests/DusanMalusev.Tests/certificate.pfx
 	@rm -f certificate.crt private.key
 
 .PHONY: clean
