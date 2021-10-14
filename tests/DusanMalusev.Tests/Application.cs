@@ -79,7 +79,7 @@ namespace DusanMalusev.Tests
         }
 
 
-        public void Dispose()
+        public new void Dispose()
         {
             using (var scope = Services.CreateScope())
             {
@@ -88,7 +88,6 @@ namespace DusanMalusev.Tests
             }
             
             base.Dispose();
-
         }
     }
 }
