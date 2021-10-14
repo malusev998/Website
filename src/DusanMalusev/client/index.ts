@@ -28,9 +28,9 @@ import {
 
 
 async function handleParticals() {
-    const snowParticals = document.getElementById(SNOW_EFFECT);
+    const snowParticles = document.getElementById(SNOW_EFFECT);
 
-    if (!snowParticals) {
+    if (!snowParticles) {
         return;
     }
 

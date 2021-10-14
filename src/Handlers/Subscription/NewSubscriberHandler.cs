@@ -23,7 +23,7 @@ namespace Handlers.Subscription
 
         public async Task<OneOf<CreateSubscriber.Response, ValidationError, DatabaseError>> Handle(CreateSubscriber.Request request, CancellationToken cancellationToken)
         {
-            var result = _validator.Validate(request);
+            var result = await _validator.ValidateAsync(request, cancellationToken);
 
             if (!result.IsValid)
             {

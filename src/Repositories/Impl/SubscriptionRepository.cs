@@ -22,16 +22,19 @@ namespace Repositories.Impl
         public async Task<Result<Subscription>> CreateAsync(CreateSubscriber.Request createSubscriber,
             CancellationToken cancellationToken = default)
         {
+            var now = _clock.GetCurrentInstant().InUtc();
+
             var subscription = new Subscription
             {
                 Name = createSubscriber.Name!,
                 Email = createSubscriber.Email!,
-                CreatedAt = _clock.GetCurrentInstant().InUtc()
+                CreatedAt = now,
+                UpdatedAt = now,
             };
 
             try
             {
-                await _dbContext.AddAsync(subscription, cancellationToken);
+                await _dbContext.Subscriptions.AddAsync(subscription, cancellationToken);
                 await _dbContext.SaveChangesAsync(cancellationToken);
 
                 return new Result<Subscription>(subscription);

@@ -1,12 +1,10 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using Database;
+﻿using Database;
 using LanguageExt.Common;
 using Microsoft.EntityFrameworkCore;
 using Models;
 using NodaTime;
 using Repositories.Contracts;
 using Transfer.Contact;
-
 
 namespace Repositories.Impl
 {
@@ -21,7 +19,10 @@ namespace Repositories.Impl
             _clock = clock;
         }
 
-        public async Task<Result<Contact>> CreateAsync([NotNull] CreateContact.Request createContact, CancellationToken cancellationToken = default)
+        public async Task<Result<Contact>> CreateAsync(
+            CreateContact.Request createContact,
+            CancellationToken cancellationToken = default
+        )
         {
             var contact = new Contact
             {
@@ -29,12 +30,13 @@ namespace Repositories.Impl
                 Email = createContact.Email!,
                 Subject = createContact.Subject!,
                 Message = createContact.Message!,
-                CreatedAt = _clock.GetCurrentInstant().InUtc()
+                CreatedAt = _clock.GetCurrentInstant().InUtc(),
+                UpdatedAt = _clock.GetCurrentInstant().InUtc(),
             };
 
             try
             {
-                await _dbContext.AddAsync(contact, cancellationToken);
+                await _dbContext.Contacts.AddAsync(contact, cancellationToken);
 
                 await _dbContext.SaveChangesAsync(cancellationToken);
 

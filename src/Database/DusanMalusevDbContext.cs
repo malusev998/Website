@@ -1,17 +1,14 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Models;
+using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace Database;
 
 public class DusanMalusevDbContext : DbContext
 {
-    public DbSet<Contact> Contacts { get; set; }
-    
-    public DbSet<Subscription> Subscriptions { get; set; }
+    public virtual DbSet<Contact> Contacts { get; set; } = null!;
 
-    static DusanMalusevDbContext()
-    {
-    }
+    public virtual DbSet<Subscription> Subscriptions { get; set; } = null!;
 
     public DusanMalusevDbContext(DbContextOptions<DusanMalusevDbContext> options)
         : base(options)
@@ -20,11 +17,15 @@ public class DusanMalusevDbContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
+        builder.HasDefaultSchema("public");
+        builder.ApplyConfigurationsFromAssembly(typeof(DusanMalusevDbContext).Assembly);
         builder.HasPostgresExtension("pg_stat_statements");
         builder.HasPostgresExtension("hstore");
-        
-        builder.UseIdentityColumns();
+        builder.HasPostgresExtension("uuid-ossp");
+        builder.HasPostgresExtension("pgcrypto");
+
         builder.UseHiLo();
-        builder.HasDefaultSchema("public");
+        builder.Model.SetValueGenerationStrategy(NpgsqlValueGenerationStrategy.SequenceHiLo);
+        base.OnModelCreating(builder);
     }
 }

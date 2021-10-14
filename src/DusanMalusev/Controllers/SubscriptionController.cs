@@ -6,7 +6,7 @@ using Transfer.Subscription;
 namespace DusanMalusev.Controllers
 {
     [ApiController]
-    [Route("api/subscription")]
+    [Route("api/subscribe")]
     public class SubscriptionController : ControllerBase
     {
         private readonly ISender _sender;
@@ -27,7 +27,7 @@ namespace DusanMalusev.Controllers
             return response.Match<IActionResult>(
                 contact => Created("/api/subscription/new", contact),
                 validation => UnprocessableEntity(validation.FirstOfAll()),
-                databaseError => StatusCode(StatusCodes.Status500InternalServerError)
+                _ => StatusCode(StatusCodes.Status500InternalServerError)
             );
         }
     }

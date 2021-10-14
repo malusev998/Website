@@ -12,9 +12,12 @@ import Swal from 'sweetalert2/dist/sweetalert2.js';
 const subscribe = async (dto: SubscriptionDTO): Promise<Subscription | Err | SubscriptionValidationError> => {
     try {
         await schema.validate(dto, { recursive: true, abortEarly: false });
-
+        console.log('validated');
+        
         await ready();
 
+        console.log('ready');
+        
         const token = await execute('contact');
 
         const res = await http('/subscribe/new', HttpMethod.POST, dto, null, token);
@@ -28,6 +31,7 @@ const subscribe = async (dto: SubscriptionDTO): Promise<Subscription | Err | Sub
             createdAt: new Date(data.createdAt),
         };
     } catch (err) {
+        console.error(err);
         if (err instanceof ValidationError) {
             const validationError: SubscriptionValidationError = { nameError: '', emailError: '' };
             err.inner.forEach((item) => {

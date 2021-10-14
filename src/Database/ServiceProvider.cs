@@ -7,7 +7,8 @@ public static class ServiceProvider
 {
     public const string ConnectionStringKey = "DusanMalusevPostgres";
 
-    public static IServiceCollection AddDatabase(this IServiceCollection services, string connectionString, bool isDevelopment = false, int minBatchSize = 10, int maxBatchSize = 100)
+    public static IServiceCollection AddDatabase(this IServiceCollection services, string connectionString,
+        bool isDevelopment = false, int minBatchSize = 10, int maxBatchSize = 100)
     {
         services.AddDbContextPool<DusanMalusevDbContext>(builder =>
         {
@@ -17,22 +18,23 @@ public static class ServiceProvider
         return services;
     }
 
-    internal static void AddDbContext(DbContextOptionsBuilder builder, string connectionString, bool isDevelopment, int minBatchSize = 10, int maxBatchSize = 100)
+    internal static void AddDbContext(DbContextOptionsBuilder builder, string connectionString, bool isDevelopment,
+        int minBatchSize = 10, int maxBatchSize = 100)
     {
         builder.EnableDetailedErrors(isDevelopment)
             .EnableSensitiveDataLogging(isDevelopment)
             .EnableServiceProviderCaching(isDevelopment)
-            .EnableThreadSafetyChecks(!isDevelopment)
+            .EnableThreadSafetyChecks(isDevelopment)
             .UseSnakeCaseNamingConvention()
             .UseNpgsql(connectionString, options =>
             {
+                options.UseRelationalNulls();
                 options.EnableRetryOnFailure(3);
                 options.MaxBatchSize(maxBatchSize);
                 options.MinBatchSize(minBatchSize);
-                // options.SetPostgresVersion(new Version(13, 0));
+                options.SetPostgresVersion(new Version(13, 0));
                 options.UseNodaTime();
-            })
-            .UseModel(DusanMalusevDbContextModel.Instance);
-
+            });
+        //.UseModel(DusanMalusevDbContextModel.Instance);
     }
 }

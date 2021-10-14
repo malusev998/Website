@@ -1,4 +1,4 @@
-﻿@inject IConfiguration config
+﻿@inject IConfiguration _config
 
 @{
     var title = ViewData["Title"];
@@ -7,8 +7,9 @@
     var ogUrl = ViewData["OgUrl"];
     var ogImage = ViewData["OgImage"] ?? "~/img/malusev.png";
     var url = ViewData["Url"] ?? "https://www.dusanmalusev.dev";
-    var googleAnalyticsKey = config.GetValue<string>("Google:Analytics");
-    var googleRecaptchaPublicKey = config.GetValue<string>("Google:ReCaptchaV3:PublicKey");
+    
+    var googleAnalyticsKey = _config.GetValue<string>("Google:Analytics");
+    var googleRecaptchaPublicKey = _config.GetValue<string>("Google:ReCaptchaV3:PublicKey");
 }
 
 

@@ -20,7 +20,7 @@ namespace Handlers.Contact
 
         public async Task<OneOf<CreateContact.Response, ValidationError, DatabaseError>> Handle(CreateContact.Request request, CancellationToken cancellationToken)
         {
-            var result = _validator.Validate(request);
+            var result = await _validator.ValidateAsync(request, cancellationToken);
 
             if (!result.IsValid)
             {
@@ -29,14 +29,14 @@ namespace Handlers.Contact
 
             var contact = await _contactRepository.CreateAsync(request, cancellationToken);
 
-            return contact.Match<OneOf<CreateContact.Response, ValidationError, DatabaseError>>(contact => new CreateContact.Response
+            return contact.Match<OneOf<CreateContact.Response, ValidationError, DatabaseError>>(c => new CreateContact.Response
             {
-                Id = contact.Id,
-                Name = contact.Name,
-                Email = contact.Email,
-                Subject = contact.Subject,
-                Message = contact.Message,
-                CreatedAt = contact.CreatedAt,
+                Id = c.Id,
+                Name = c.Name,
+                Email = c.Email,
+                Subject = c.Subject,
+                Message = c.Message,
+                CreatedAt = c.CreatedAt,
             }, error => new DatabaseError(error.Message));
         }
     }

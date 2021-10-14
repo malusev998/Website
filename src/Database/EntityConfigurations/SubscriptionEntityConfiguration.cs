@@ -1,3 +1,4 @@
+using Database.ValueGenerators;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Models;
@@ -12,8 +13,7 @@ namespace Database.EntityConfigurations
             builder.HasKey(t => t.Id);
 
             builder.Property(t => t.Id)
-                .UseIdentityAlwaysColumn()
-                .UseHiLo();
+                .UseHiLo("subscription_hilo");
 
             builder.Property(t => t.Name)
                 .HasMaxLength(50)
@@ -27,16 +27,18 @@ namespace Database.EntityConfigurations
 
             builder.Property(t => t.CreatedAt)
                 .IsRequired()
+                .HasValueGenerator<ZonedDateTimeGenerator>()
                 .ValueGeneratedOnAdd();
 
             builder.Property(t => t.UpdatedAt)
-                .IsRequired()
-                .ValueGeneratedOnAddOrUpdate();
-
+                .IsRequired(false)
+                .HasValueGenerator<ZonedDateTimeGenerator>()
+                .ValueGeneratedOnUpdate();
+            
             builder.HasIndex(t => t.Email)
-                .IsCreatedConcurrently(true)
+                .IsCreatedConcurrently()
                 .HasSortOrder(SortOrder.Descending)
-                .IsUnique(true);
+                .IsUnique();
         }
     }
 }
