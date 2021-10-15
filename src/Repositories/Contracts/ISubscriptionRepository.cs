@@ -8,6 +8,6 @@ namespace Repositories.Contracts
     {
         Task<Result<Subscription>> CreateAsync(CreateSubscriber.Request createContact, CancellationToken cancellationToken = default);
 
-        Task<Result<int>> DeleteAsync(int id, CancellationToken token = default);
+        Task<Result<int>> DeleteAsync(long id, CancellationToken token = default);
     }
 }

@@ -49,7 +49,7 @@ namespace Repositories.Impl
             }
         }
 
-        public async Task<Result<int>> DeleteAsync(int id, CancellationToken token = default)
+        public async Task<Result<int>> DeleteAsync(long id, CancellationToken token = default)
         {
             try
             {
