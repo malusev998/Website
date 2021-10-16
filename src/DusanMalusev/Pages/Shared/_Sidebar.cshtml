@@ -1,25 +1,26 @@
-﻿<aside class="h-screen z-10 bg-transparent fixed hidden xl:flex flex-col justify-between xl:w-1/6 border-r-2 border-gray-800">
-    <section class="flex border-b-2 border-gray-800 flex-col mt-5 pb-4 items-center justify-center">
-        <div class="border-4 border-gray-700 w-3/6 rounded-full">
-            <img class="w-full rounded-full h-full" src="~/img/malusev.png" alt="Dusan Malusev" asp-append-version="true" />
-        </div>
-        <h2 class="text-2xl text-gray-200 hover:text-gray-100 text-center mt-8">Dusan Malusev</h2>
-    </section>
-    <nav>
-        <ul class="flex flex-col justify-between">
-            <li class="h-12 hover:bg-blue-nav">
-                <a class="flex w-full h-full text-gray-400 uppercase text-xl active hover:text-white justify-center items-center"
-                   asp-page="/Index">
-                    Home
-                </a>
-            </li>
-            <li class="h-12 hover:bg-blue-nav">
-                <a class="flex w-full h-full text-gray-400 uppercase text-xl hover:text-white justify-center items-center"
-                   asp-page="/About">
-                    About
-                </a>
-            </li>
-            @*
+﻿<aside class="flex">
+    <section class="sidebar flex w-3/4 sm:w-1/2 lg:w-1/5 fixed z-50 transform -translate-x-full lg:translate-x-0 bg-main-dark-700 h-screen flex-col justify-between border-r-2 border-gray-800 transition-all">
+        <section class="flex flex-none border-b-2 border-gray-800 flex-col mt-5 pb-4 items-center justify-center">
+            <div class="border-4 border-gray-700 w-3/6 rounded-full">
+                <img class="w-full rounded-full h-full" src="~/img/malusev.png" alt="Dusan Malusev" asp-append-version="true"/>
+            </div>
+            <h2 class="text-2xl text-gray-200 hover:text-gray-100 text-center mt-8">Dusan Malusev</h2>
+        </section>
+        <nav class="flex-grow flex items-center">
+            <ul class="flex flex-col justify-between w-full">
+                <li class="h-12 hover:bg-blue-nav">
+                    <a class="flex w-full h-full text-gray-400 uppercase text-xl active hover:text-white justify-center items-center"
+                       asp-page="/Index">
+                        Home
+                    </a>
+                </li>
+                <li class="h-12 hover:bg-blue-nav">
+                    <a class="flex w-full h-full text-gray-400 uppercase text-xl hover:text-white justify-center items-center"
+                       asp-page="/About">
+                        About
+                    </a>
+                </li>
+                @*
                 <li class="h-12 hover:bg-blue-nav">
                 <a class="flex w-full h-full text-gray-400 uppercase text-xl hover:text-white justify-center items-center"
                 asp-page="/Blog">Blog</a>
@@ -29,16 +30,22 @@
                 asp-page="/Projects">Projects</a>
                 </li>
             *@
-            <li class="h-12 hover:bg-blue-nav">
-                <a class="flex w-full h-full text-gray-400 uppercase text-xl hover:text-white justify-center items-center"
-                   asp-page="/Contact">Contact</a>
-            </li>
-        </ul>
-    </nav>
-    <footer class="pt-4 pb-4 border-t-2 border-gray-800 text-center">
-        <p>
-            <span class="text-lg">&copy;</span> @DateTime.Now.Year Dusan Malusev
-        </p>
-        <a asp-page="/Privacy">Privacy Policy</a>
-    </footer>
+                <li class="h-12 hover:bg-blue-nav">
+                    <a class="flex w-full h-full text-gray-400 uppercase text-xl hover:text-white justify-center items-center"
+                       asp-page="/Contact">
+                        Contact
+                    </a>
+                </li>
+            </ul>
+        </nav>
+        <footer class="flex-none pt-4 pb-4 border-t-2 border-gray-800 text-center">
+            <p>
+                <span class="text-lg">&copy;</span> @DateTime.Now.Year Dusan Malusev
+            </p>
+            <a asp-page="/Privacy">Privacy Policy</a>
+        </footer>
+    </section>
+    <div class="hamburger-menu lg:hidden">
+        <img src="~/img/menu.svg" alt="Open/Close Hamburger Menu">
+    </div>
 </aside>

@@ -5,9 +5,9 @@
     var keywords = ViewData["Keywords"] ?? "developer,dusan,dusan malusev,software,web developer,backend software developer,backend";
     var description = ViewData["Description"] ?? "Backend software engineer from Serbia with relevant experience in building various backend systems";
     var ogUrl = ViewData["OgUrl"];
-    var ogImage = ViewData["OgImage"] ?? "~/img/malusev.png";
+    var ogImage = ViewData["OgImage"] ?? "/img/malusev.png";
     var url = ViewData["Url"] ?? "https://www.dusanmalusev.dev";
-    
+
     var googleAnalyticsKey = _config.GetValue<string>("Google:Analytics");
     var googleRecaptchaPublicKey = _config.GetValue<string>("Google:ReCaptchaV3:PublicKey");
 }
@@ -34,21 +34,20 @@
     <meta property="og:description" content="@description"/>
     <meta property="og:site_name" content="Dusan Malusev's Website"/>
 
-    <link rel="stylesheet" href="~/dark.min.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/dark.min.css" asp-append-version="true"/>
     <link rel="stylesheet" href="~/dist/index.css" asp-append-version="true"/>
 </head>
 
-<body class="relative min-h-screen text-white bg-main-dark-900">
-<section class="flex">
-    <partial name="_Sidebar"/>
-    <aside class="h-screen z-1 bg-transparent hidden xl:w-1/6 xl:flex mr-10"></aside>
-    <main class="w-full min-h-screen">
+<body class="min-h-screen text-white bg-main-dark-900">
+<partial name="_Sidebar"/>
+<main class="min-h-screen flex justify-end">
+    <div class="w-full lg:w-4/5">
         <div class="flex w-full h-full">
             @RenderBody()
         </div>
-    </main>
-</section>
+    </div>
 
+</main>
 
 <script src="https://www.googletagmanager.com/gtag/js?id=@googleAnalyticsKey"></script>
 <script src="https://www.google.com/recaptcha/api.js?render=@googleRecaptchaPublicKey"></script>

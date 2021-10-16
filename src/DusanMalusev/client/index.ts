@@ -26,6 +26,8 @@ import {
     setCsrfTokenHeader
 } from './csrf';
 
+import sidebar from "./sidebar";
+
 
 async function handleParticals() {
     const snowParticles = document.getElementById(SNOW_EFFECT);
@@ -78,6 +80,7 @@ async function handleContact() {
 
 document.addEventListener('DOMContentLoaded', async () => {
     try {
+        sidebar('.sidebar', '.hamburger-menu');
         setBaseUrl(process.env.API_URL);
         setCsrfTokenCookieName(csrf.COOKIE_NAME);
         setCsrfTokenHeader(csrf.HEADER_NAME);

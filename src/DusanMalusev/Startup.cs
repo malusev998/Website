@@ -17,6 +17,7 @@ using RecaptchaV3;
 using Repositories;
 using Serializers;
 using Serilog;
+using Sitemap;
 using Validators;
 
 namespace DusanMalusev
@@ -24,10 +25,12 @@ namespace DusanMalusev
     public class Startup
     {
         private readonly IConfiguration _configuration;
+        private readonly IHostEnvironment _hostEnvironment;
 
-        public Startup(IConfiguration configuration)
+        public Startup(IConfiguration configuration, IHostEnvironment hostEnvironment)
         {
             _configuration = configuration;
+            _hostEnvironment = hostEnvironment;
         }
 
         public void ConfigureServices(IServiceCollection services)
@@ -40,9 +43,9 @@ namespace DusanMalusev
                 )
                 .UseCryptographicAlgorithms(new AuthenticatedEncryptorConfiguration
                 {
-                    // EncryptionAlgorithm = _hostEnvironment.IsProduction()
-                    //     ? EncryptionAlgorithm.AES_256_GCM
-                    //     : EncryptionAlgorithm.AES_256_CBC,
+                    EncryptionAlgorithm = _hostEnvironment.IsProduction()
+                        ? EncryptionAlgorithm.AES_256_GCM
+                        : EncryptionAlgorithm.AES_256_CBC,
                     ValidationAlgorithm = ValidationAlgorithm.HMACSHA512,
                 });
 
@@ -57,11 +60,18 @@ namespace DusanMalusev
 
             services.AddOptions<CsrfCookie>()
                 .Bind(_configuration.GetSection(CsrfCookie.Key))
-                .ValidateDataAnnotations();
+                .ValidateDataAnnotations()
+                .ValidateOnStart();
+
+            services.AddOptions<SitemapOptions>()
+                .Bind(_configuration.GetSection(SitemapOptions.Key))
+                .ValidateDataAnnotations()
+                .ValidateOnStart();
 
             services.AddOptions<ReCaptchaV3Settings>()
                 .Bind(_configuration.GetSection("Google:ReCaptchaV3"))
-                .ValidateDataAnnotations();
+                .ValidateDataAnnotations()
+                .ValidateOnStart();
 
             services.AddSingleton<IClock>(_ => SystemClock.Instance)
                 .AddRedisCache(
@@ -77,6 +87,7 @@ namespace DusanMalusev
                 .AddRepositories()
                 .AddValidators()
                 .AddMediatr()
+                .AddSitemapGenerator()
                 .AddReCaptchaV3()
                 .AddCrypto()
                 .AddSerializers()

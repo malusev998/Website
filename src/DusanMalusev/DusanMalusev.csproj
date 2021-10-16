@@ -47,6 +47,7 @@
     <ProjectReference Include="..\RecaptchaV3\RecaptchaV3.csproj" />
     <ProjectReference Include="..\Repositories\Repositories.csproj" />
     <ProjectReference Include="..\Serializers\Serializers.csproj" />
+    <ProjectReference Include="..\Sitemap\Sitemap.csproj" />
     <ProjectReference Include="..\Transfer\Transfer.csproj" />
     <ProjectReference Include="..\Validators\Validators.csproj" />
   </ItemGroup>
@@ -54,5 +55,21 @@
   <ItemGroup>
     <None Remove="certificate.pfx" />
     <Content Include="certificate.pfx" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <_ContentIncludedByDefault Remove="wwwroot\dist\.DS_Store" />
+    <_ContentIncludedByDefault Remove="wwwroot\dist\contact.14a0cf1c.js" />
+    <_ContentIncludedByDefault Remove="wwwroot\dist\contact.14a0cf1c.js.map" />
+    <_ContentIncludedByDefault Remove="wwwroot\dist\index.css" />
+    <_ContentIncludedByDefault Remove="wwwroot\dist\index.css.map" />
+    <_ContentIncludedByDefault Remove="wwwroot\dist\index.js" />
+    <_ContentIncludedByDefault Remove="wwwroot\dist\index.js.map" />
+    <_ContentIncludedByDefault Remove="wwwroot\dist\pathseg.c5266f95.js" />
+    <_ContentIncludedByDefault Remove="wwwroot\dist\pathseg.c5266f95.js.map" />
+    <_ContentIncludedByDefault Remove="wwwroot\dist\snow.865c0473.js" />
+    <_ContentIncludedByDefault Remove="wwwroot\dist\snow.865c0473.js.map" />
+    <_ContentIncludedByDefault Remove="wwwroot\dist\subscribe.8407b786.js" />
+    <_ContentIncludedByDefault Remove="wwwroot\dist\subscribe.8407b786.js.map" />
   </ItemGroup>
 </Project>

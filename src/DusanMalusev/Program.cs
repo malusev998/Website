@@ -9,6 +9,7 @@ Log.Logger = new LoggerConfiguration()
     .WriteTo.Console()
     .CreateBootstrapLogger();
 
+
 var builder = Host.CreateDefaultBuilder(args)
     .UseDefaultServiceProvider((context, options) =>
     {

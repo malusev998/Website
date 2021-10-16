@@ -1,0 +1,24 @@
+User-Agent: Googlebot
+Allow: /
+
+
+User-Agent: Googlebot-Image
+Allow: /
+
+
+User-Agent: SearchmetricsBot
+Allow: /
+
+
+User-Agent: SEOkicks-Robot
+Allow: /
+
+
+User-Agent: *
+Disallow: /login
+Disallow: /register
+Disallow: /dashboard
+Disallow: /unsubscribe
+
+
+Sitemap: sitemap.xml
