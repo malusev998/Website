@@ -101,9 +101,8 @@ jobs:
           mkdir -p /apps
           rm -rf /apps/DusanMalusev
           cd /tmp
-          rm -rf DusanMalusev.tar.gz
           tar --overwrite -C /apps -xvf DusanMalusev.tar.gz
-          mv /apps/publish DusanMalusev/
+          mv /apps/publish /apps/DusanMalusev
           systemctl restart website
           rm -rf DusanMalusev.tar.gz
         host: ${{ secrets.WEBSITE_HOST }}
