@@ -39,9 +39,9 @@ jobs:
     - name: 'Add Sertificates'
       run: make certificate
     - name: 'Building the API'
-      run: make build-prod RUNTIME=linux-x64
+      run: make RUNTIME="linux-x64" build-prod
     # - name: 'Running Tests'
-    #   run: make test
+    #   run: make RUNTIME="linux-x64" test
     #   env:
     #     ASPNETCORE_ENVIRONMENT: Testing
     #     ConnectionStrings__DusanMalusevPostgres: 'Host=127.0.0.1;Port=5432;Username=postgres;Password=postgres;Timezone=UTC;'
@@ -53,8 +53,8 @@ jobs:
     #     Google__Analytics: ${{ secrets.GOOGLE_ANALYTICS }}
     - name: Package
       run: |
-         make publish
-         make migration-bundle
+         make RUNTIME="linux-x64" publish
+         make RUNTIME="linux-x64" migration-bundle
     - name: Release
       uses: softprops/action-gh-release@v1
       with:

@@ -1,10 +1,30 @@
-RUNTIME ?= osx-x64
+ifeq ($(OS),Windows_NT)
+	ifeq ($(PROCESSOR_ARCHITEW6432),AMD64)
+		RUNTIME ?= win-arm64
+	else
+		RUNTIME ?= win-x64
+	endif
+else
+	UNAME_S := $(shell uname -s)
+	UNAME_P := $(shell uname -p)
+	ifeq ($(UNAME_S),Linux)
+		RUNTIME ?= linux-x64
+	endif
+
+	ifeq ($(UNAME_S),Darwin)
+		ifeq ($(UNAME_P),x86_64)
+			RUNTIME ?= osx.11.0-x64
+		else
+			RUNTIME ?= osx.11.0-arm64
+		endif
+	endif
+endif
 CONF = Release
 OUT_DIR=$(PWD)
-BIN_DIR = DusanMalusev/bin/Release/net6.0/$(RUNTIME)
+BIN_DIR = src/DusanMalusev/bin/Release/net6.0/$(RUNTIME)
 
 .PHONY: build-prod
-build: restore
+build-prod: restore
 	@dotnet build -c $(CONF) --nologo --no-restore -p:MyRuntimeIdentifier=$(RUNTIME) -p:PublishReadyToRun=false
 
 .PHONY: publish
