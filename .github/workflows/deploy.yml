@@ -70,20 +70,8 @@ jobs:
         username: ${{ secrets.POSTGRES_USER }}
         key: ${{ secrets.POSTGRES_PRIVATE_KEY }}
         overwrite: true
-        port: ${{ secrets.PORT }}
         source: "efbundle"
         target: "/tmp/efbundle"
-        tar_tmp_path: '/tmp'
-    - name: Copy Application to Server
-      uses: appleboy/scp-action@master
-      with:
-        host: ${{ secrets.WEBSITE_HOST }}
-        key: ${{ secrets.WEBSITE_PRIVATE_KEY }}
-        username: ${{ secrets.WEBSITE_USER }}
-        overwrite: true
-        port: ${{ secrets.PORT }}
-        source: "DusanMalusev.tar.gz"
-        target: "/tmp/DusanMalusev.tar.gz"
         tar_tmp_path: '/tmp'
     - name: Deploy Database Schema
       uses: fifsky/ssh-action@master
@@ -96,6 +84,16 @@ jobs:
         host: ${{ secrets.POSTGRES_HOST }}
         user: ${{ secrets.POSTGRES_USER }}
         key: ${{ secrets.POSTGRES_PRIVATE_KEY }}
+    - name: Copy Application to Server
+      uses: appleboy/scp-action@master
+      with:
+        host: ${{ secrets.WEBSITE_HOST }}
+        key: ${{ secrets.WEBSITE_PRIVATE_KEY }}
+        username: ${{ secrets.WEBSITE_USER }}
+        overwrite: true
+        source: "DusanMalusev.tar.gz"
+        target: "/tmp/DusanMalusev.tar.gz"
+        tar_tmp_path: '/tmp'
     - name: Deploy Application
       uses: fifsky/ssh-action@master
       with:
