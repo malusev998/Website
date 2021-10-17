@@ -16,17 +16,19 @@ namespace Database
             {
                 throw new ArgumentNullException("ASPNETCORE_ENVIRONMENT cannot be null");
             }
-            
-            var path = environment switch {
+
+            var path = Path.GetFullPath(environment switch
+            {
                 "Development" => Path.Combine(Directory.GetCurrentDirectory(), "..", "DusanMalusev"),
-                "Production" => Path.Combine("etc", "dusanmalusev"),
+                "Production" => Path.Combine("/", "etc", "dusanmalusev"),
                 _ => throw new Exception("Invalid ASPNETCORE_ENVIRONMENT")
-            };
+            });
 
             var configuration = new ConfigurationBuilder()
                 .SetBasePath(path)
-                .AddJsonFile("appsettings.json")
+                .AddJsonFile("appsettings.json", true)
                 .AddJsonFile($"appsettings.{environment}.json", optional: true)
+                .AddCommandLine(args)
                 .AddEnvironmentVariables()
                 .Build();
 

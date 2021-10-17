@@ -19,6 +19,11 @@ namespace DusanMalusev.Tests
 
         public static IConfiguration? Configuration { get; set; }
 
+        public Application()
+        {
+            Environment.SetEnvironmentVariable("ASPNETCORE_ENVIRONMENT", "Testing", EnvironmentVariableTarget.Process);
+        }
+
         protected override IHostBuilder CreateHostBuilder()
         {
             return new HostBuilder()
@@ -86,7 +91,7 @@ namespace DusanMalusev.Tests
                 var context = scope.ServiceProvider.GetRequiredService<DusanMalusevDbContext>();
                 context.Database.EnsureDeleted();
             }
-            
+
             base.Dispose();
         }
     }

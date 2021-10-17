@@ -54,6 +54,7 @@ namespace DusanMalusev.Tests.Controllers.Integration
         {
             _application.Dispose();
             _client.Dispose();
+            GC.SuppressFinalize(this);
         }
     }
 }
