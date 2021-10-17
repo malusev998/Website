@@ -11,14 +11,15 @@
     <RuntimeIdentifier>$(MyRuntimeIdentifier)</RuntimeIdentifier>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+  <!-- <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <PublishTrimmed>true</PublishTrimmed>
     <TrimmerDefaultAction>link</TrimmerDefaultAction>
     <PublishReadyToRun>true</PublishReadyToRun>
-  </PropertyGroup>
+  </PropertyGroup> -->
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.HttpOverrides" Version="2.2.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.0-rc.2.21480.5" />
     <PackageReference Include="Microsoft.Extensions.Caching.StackExchangeRedis" Version="6.0.0-rc.2.21480.10" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="6.0.0-rc.2.21480.5">
       <PrivateAssets>all</PrivateAssets>
@@ -57,19 +58,4 @@
     <Content Include="certificate.pfx" />
   </ItemGroup>
 
-  <ItemGroup>
-    <_ContentIncludedByDefault Remove="wwwroot\dist\.DS_Store" />
-    <_ContentIncludedByDefault Remove="wwwroot\dist\contact.14a0cf1c.js" />
-    <_ContentIncludedByDefault Remove="wwwroot\dist\contact.14a0cf1c.js.map" />
-    <_ContentIncludedByDefault Remove="wwwroot\dist\index.css" />
-    <_ContentIncludedByDefault Remove="wwwroot\dist\index.css.map" />
-    <_ContentIncludedByDefault Remove="wwwroot\dist\index.js" />
-    <_ContentIncludedByDefault Remove="wwwroot\dist\index.js.map" />
-    <_ContentIncludedByDefault Remove="wwwroot\dist\pathseg.c5266f95.js" />
-    <_ContentIncludedByDefault Remove="wwwroot\dist\pathseg.c5266f95.js.map" />
-    <_ContentIncludedByDefault Remove="wwwroot\dist\snow.865c0473.js" />
-    <_ContentIncludedByDefault Remove="wwwroot\dist\snow.865c0473.js.map" />
-    <_ContentIncludedByDefault Remove="wwwroot\dist\subscribe.8407b786.js" />
-    <_ContentIncludedByDefault Remove="wwwroot\dist\subscribe.8407b786.js.map" />
-  </ItemGroup>
 </Project>

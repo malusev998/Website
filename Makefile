@@ -1,8 +1,8 @@
 ifeq ($(OS),Windows_NT)
 	ifeq ($(PROCESSOR_ARCHITEW6432),AMD64)
-		RUNTIME ?= win-arm64
-	else
 		RUNTIME ?= win-x64
+	else
+		RUNTIME ?= win-arm64
 	endif
 else
 	UNAME_S := $(shell uname -s)
@@ -29,7 +29,7 @@ build-prod: restore
 
 .PHONY: publish
 publish: restore
-	@dotnet publish -c $(CONF) --nologo --no-restore -p:MyRuntimeIdentifier=$(RUNTIME) -p:PublishReadyToRun=false
+	@dotnet publish -c $(CONF) --nologo --no-restore -p:MyRuntimeIdentifier=$(RUNTIME)
 	@cd $(BIN_DIR) && tar -zcvf $(OUT_DIR)/DusanMalusev.tar.gz publish
 
 .PHONY: migrate

@@ -8,7 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="LanguageExt.Core" Version="3.5.62-beta" />
+    <PackageReference Include="LanguageExt.Core" Version="4.0.0" />
     <PackageReference Include="MediatR" Version="9.0.0" />
     <PackageReference Include="NodaTime" Version="3.0.7" />
     <PackageReference Include="OneOf" Version="3.0.201" />

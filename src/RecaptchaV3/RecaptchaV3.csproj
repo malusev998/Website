@@ -14,8 +14,8 @@
       <PackageReference Include="Microsoft.AspNetCore.Mvc.Abstractions" Version="2.2.0" />
       <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="6.0.0-rc.2.21480.5" />
       <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="6.0.0-rc.2.21480.5" />
-      <PackageReference Include="Microsoft.Extensions.Http" Version="6.0.0-rc.1.21451.13" />
-      <PackageReference Include="Microsoft.Extensions.Http.Polly" Version="6.0.0-rc.1.21452.15" />
+      <PackageReference Include="Microsoft.Extensions.Http" Version="6.0.0-rc.2.21480.5" />
+      <PackageReference Include="Microsoft.Extensions.Http.Polly" Version="6.0.0-rc.2.21480.10" />
       <PackageReference Include="Microsoft.Extensions.Options" Version="6.0.0-rc.2.21480.5" />
       <PackageReference Include="System.Text.Json" Version="6.0.0-rc.2.21480.5" />
     </ItemGroup>

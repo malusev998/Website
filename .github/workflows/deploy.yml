@@ -98,8 +98,11 @@ jobs:
       uses: fifsky/ssh-action@master
       with:
         command: |
+          mkdir -p /apps
+          rm -rf /apps/DusanMalusev
           cd /tmp
-          tar -xvf --overwrite -C /apps DusanMalusev.tar.gz
+          rm -rf DusanMalusev.tar.gz
+          tar --overwrite -C /apps -xvf DusanMalusev.tar.gz
           mv /apps/publish DusanMalusev/
           systemctl restart website
           rm -rf DusanMalusev.tar.gz
