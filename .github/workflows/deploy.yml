@@ -71,7 +71,7 @@ jobs:
         key: ${{ secrets.POSTGRES_PRIVATE_KEY }}
         overwrite: true
         source: "efbundle"
-        target: "/tmp/efbundle"
+        target: "/tmp"
         tar_tmp_path: '/tmp'
     - name: Deploy Database Schema
       uses: fifsky/ssh-action@master
@@ -92,15 +92,17 @@ jobs:
         username: ${{ secrets.WEBSITE_USER }}
         overwrite: true
         source: "DusanMalusev.tar.gz"
-        target: "/tmp/DusanMalusev.tar.gz"
+        target: "/tmp"
         tar_tmp_path: '/tmp'
     - name: Deploy Application
       uses: fifsky/ssh-action@master
       with:
         command: |
           cd /tmp
-          tar -xvf --overwrite -C /app DusanMalusev.tar.gz
+          tar -xvf --overwrite -C /apps DusanMalusev.tar.gz
+          mv /apps/publish DusanMalusev/
           systemctl restart website
+          rm -rf DusanMalusev.tar.gz
         host: ${{ secrets.WEBSITE_HOST }}
         user: ${{ secrets.WEBSITE_USER }}
         key: ${{ secrets.WEBSITE_PRIVATE_KEY }}
