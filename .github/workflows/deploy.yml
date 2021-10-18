@@ -31,6 +31,18 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v2
+    - uses: actions/cache@v2
+      with:
+        path: ~/.npm
+        key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+        restore-keys: |
+          ${{ runner.os }}-node-
+    - uses: actions/setup-node@v2
+      name: 'Setup NodeJS'
+      with:
+        node-version: '16'
+        cache: 'npm'
+        cache-dependency-path: src/DusanMalusev/package-lock.json
     - name: Setup DotNet
       uses: actions/setup-dotnet@v1
       with:
@@ -40,6 +52,18 @@ jobs:
       run: dotnet tool install --global dotnet-ef --version 6.0.0-rc.2
     - name: 'Add Sertificates'
       run: make certificate
+    - name: 'Install Node Modules'
+      run: npm install
+      working-directory: src/DusanMalusev
+    - name: 'Build Frontend for Production'
+      working-directory: src/DusanMalusev/
+      run: |
+        rm -rf wwwroot/dist
+        npm run prod
+      env:
+        NODE_ENV: production
+        API_URL: ${{ secrets.API_URL }}
+        RECAPTCHA_FRONTEND_URL: ${{ secrets.RECAPTCHA_PUBLIC_KEY }}
     - name: 'Building the API'
       run: make RUNTIME="linux-x64" build-prod
     # - name: 'Running Tests'
