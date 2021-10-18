@@ -176,11 +176,12 @@ namespace DusanMalusev
 
             app.UseMiddleware<CsrfMiddleware>();
 
-            // app.UseHttpsRedirection();
             app.UseStaticFiles();
 
             app.UseRouting();
 
+            app.UseCors();
+            
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
