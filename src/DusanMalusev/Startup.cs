@@ -35,6 +35,43 @@ namespace DusanMalusev
 
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddCors(options =>
+            {
+                var cors = _configuration.GetValue<CorsOptions>(CorsOptions.Key);
+
+                options.DefaultPolicyName = cors.Name;
+
+                options.AddDefaultPolicy(builder =>
+                {
+                    builder.WithOrigins(cors.Origins);
+                    builder.SetIsOriginAllowedToAllowWildcardSubdomains();
+                    
+
+                    if (cors.AllowAnyHeader)
+                    {
+                        builder.AllowAnyHeader();
+                    }
+                    else
+                    {
+                        builder.WithHeaders(cors.Headers);
+                    }
+
+                    if (cors.AllowAnyMethod)
+                    {
+                        builder.AllowAnyMethod();
+                    }
+                    else
+                    {
+                        builder.WithMethods(cors.Methods);
+                    }
+
+                    if (cors.AllowsCredentials)
+                    {
+                        builder.AllowCredentials();
+                    }
+                });
+            });
+
             services.AddDataProtection()
                 .PersistKeysToFileSystem(new DirectoryInfo(_configuration["Keys:StoragePath"]))
                 .ProtectKeysWithCertificate(new X509Certificate2(

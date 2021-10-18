@@ -6,5 +6,5 @@ public class SitemapOptions
 {
     public const string Key = "Sitemap";
 
-    [Required] public string Domain { get; set; }
+    [Required] public string Domain { get; set; } = null!;
 }
