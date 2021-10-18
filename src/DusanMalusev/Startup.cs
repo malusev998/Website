@@ -37,7 +37,7 @@ namespace DusanMalusev
         {
             services.AddCors(options =>
             {
-                var cors = _configuration.GetValue<CorsOptions>(CorsOptions.Key);
+                var cors = _configuration.GetSection(CorsOptions.Key).Get<CorsOptions>();
 
                 options.DefaultPolicyName = cors.Name;
 
@@ -97,6 +97,11 @@ namespace DusanMalusev
 
             services.AddOptions<CsrfCookie>()
                 .Bind(_configuration.GetSection(CsrfCookie.Key))
+                .ValidateDataAnnotations()
+                .ValidateOnStart();
+            
+            services.AddOptions<CorsOptions>()
+                .Bind(_configuration.GetSection(CorsOptions.Key))
                 .ValidateDataAnnotations()
                 .ValidateOnStart();
 
