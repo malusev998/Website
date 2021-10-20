@@ -60,24 +60,4 @@
     <Content Include="certificate.pfx" />
   </ItemGroup>
 
-  <ItemGroup>
-    <_ContentIncludedByDefault Remove="wwwroot\dist\contact.c526f778.js" />
-    <_ContentIncludedByDefault Remove="wwwroot\dist\index.css" />
-    <_ContentIncludedByDefault Remove="wwwroot\dist\index.js" />
-    <_ContentIncludedByDefault Remove="wwwroot\dist\pathseg.0df3bca3.js" />
-    <_ContentIncludedByDefault Remove="wwwroot\dist\snow.f59cd02f.js" />
-    <_ContentIncludedByDefault Remove="wwwroot\dist\subscribe.02ff2263.js" />
-    <_ContentIncludedByDefault Remove="wwwroot\dist\subscribe.1b44a7b0.js" />
-    <_ContentIncludedByDefault Remove="wwwroot\dist\contact.14a0cf1c.js" />
-    <_ContentIncludedByDefault Remove="wwwroot\dist\contact.14a0cf1c.js.map" />
-    <_ContentIncludedByDefault Remove="wwwroot\dist\index.css.map" />
-    <_ContentIncludedByDefault Remove="wwwroot\dist\index.js.map" />
-    <_ContentIncludedByDefault Remove="wwwroot\dist\pathseg.c5266f95.js" />
-    <_ContentIncludedByDefault Remove="wwwroot\dist\pathseg.c5266f95.js.map" />
-    <_ContentIncludedByDefault Remove="wwwroot\dist\snow.865c0473.js" />
-    <_ContentIncludedByDefault Remove="wwwroot\dist\snow.865c0473.js.map" />
-    <_ContentIncludedByDefault Remove="wwwroot\dist\subscribe.8407b786.js" />
-    <_ContentIncludedByDefault Remove="wwwroot\dist\subscribe.8407b786.js.map" />
-  </ItemGroup>
-
 </Project>

@@ -23,6 +23,8 @@
     "yup": "^0.32.8"
   },
   "devDependencies": {
+    "@parcel/compressor-brotli": "^2.0.0",
+    "@parcel/compressor-gzip": "^2.0.0",
     "@types/gtag.js": "^0.0.7",
     "@types/node": "^16.10.9",
     "@types/yup": "^0.29.11",
@@ -35,5 +37,10 @@
     "default": {
       "distDir": "./wwwroot/dist"
     }
+  },
+  "@parcel/bundler-default": {
+    "minBundles": 1,
+    "minBundleSize": 200,
+    "maxParallelRequests": 20
   }
 }
