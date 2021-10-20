@@ -171,13 +171,12 @@ namespace DusanMalusev
                 app.UseSerilogRequestLogging();
             }
 
-            //
-            // app.UseForwardedHeaders(new ForwardedHeadersOptions
-            // {
-            //     ForwardedHeaders = ForwardedHeaders.XForwardedFor |
-            //                        ForwardedHeaders.XForwardedProto |
-            //                        ForwardedHeaders.XForwardedHost,
-            // });
+            app.UseForwardedHeaders(new ForwardedHeadersOptions
+            {
+                ForwardedHeaders = ForwardedHeaders.XForwardedFor |
+                                   ForwardedHeaders.XForwardedProto |
+                                   ForwardedHeaders.XForwardedHost,
+            });
 
             app.UseMiddleware<CsrfMiddleware>();
 
