@@ -2,6 +2,9 @@
 @tailwind components;
 @tailwind utilities;
 
+.grecaptcha-badge {
+    z-index: 999;
+}
 :root {
     --main-dark-900: #10121b;
     --main-dark-700: #191d2b;

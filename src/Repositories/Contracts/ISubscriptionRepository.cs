@@ -6,6 +6,8 @@ namespace Repositories.Contracts
 {
     public interface ISubscriptionRepository
     {
+        Task<Result<Subscription>> GetOneAsync(string email, CancellationToken cancellationToken);
+
         Task<Result<Subscription>> CreateAsync(CreateSubscriber.Request createContact, CancellationToken cancellationToken = default);
 
         Task<Result<int>> DeleteAsync(long id, CancellationToken token = default);

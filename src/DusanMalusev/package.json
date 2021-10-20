@@ -4,9 +4,9 @@
   "description": "My Personal website",
   "main": "client/index.js",
   "scripts": {
-    "dev": "cross-env NODE_ENV=development parcel client/index.ts --dist-dir ./wwwroot/dist",
-    "watch": "cross-env NODE_ENV=development parcel watch client/index.ts --dist-dir ./wwwroot/dist",
-    "prod": "cross-env NODE_ENV=production parcel build client/index.ts --no-source-maps --dist-dir ./wwwroot/dist"
+    "dev": "cross-env NODE_ENV=development parcel client/index.ts client/main.ts client/contact.ts --dist-dir ./wwwroot/dist",
+    "watch": "cross-env NODE_ENV=development parcel watch client/index.ts client/main.ts client/contact.ts --dist-dir ./wwwroot/dist",
+    "prod": "cross-env NODE_ENV=production parcel build client/index.ts client/main.ts client/contact.ts --no-source-maps --dist-dir ./wwwroot/dist"
   },
   "author": "Dusan Malusev",
   "license": "MIT",

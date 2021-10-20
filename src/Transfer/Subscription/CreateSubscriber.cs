@@ -7,7 +7,7 @@ namespace Transfer.Subscription
 {
     public static class CreateSubscriber
     {
-        public record Request : IRequest<OneOf<Response, ValidationError, DatabaseError>>
+        public record Request : IRequest<OneOf<Response, RecordAlreadyExits, ValidationError, DatabaseError>>
         {
             public string? Name { get; set; }
             public string? Email { get; set; }

@@ -35,17 +35,47 @@ namespace DusanMalusev
 
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddOptions<CsrfCookie>()
+                .Bind(_configuration.GetSection(CsrfCookie.Key))
+                .ValidateDataAnnotations()
+                .ValidateOnStart();
+
+            services.AddOptions<CorsOptions>()
+                .Bind(_configuration.GetSection(CorsOptions.Key))
+                .ValidateDataAnnotations()
+                .ValidateOnStart();
+
+            services.AddOptions<SitemapOptions>()
+                .Bind(_configuration.GetSection(SitemapOptions.Key))
+                .ValidateDataAnnotations()
+                .ValidateOnStart();
+
+            services.AddOptions<ReCaptchaV3Settings>()
+                .Bind(_configuration.GetSection("Google:ReCaptchaV3"))
+                .ValidateDataAnnotations();
+
+            services.AddDataProtection()
+                .PersistKeysToFileSystem(new DirectoryInfo(_configuration["Keys:StoragePath"]))
+                .ProtectKeysWithCertificate(new X509Certificate2(
+                    _configuration["Keys:Certificate:Path"],
+                    _configuration["Keys:Certificate:Password"])
+                )
+                .UseCryptographicAlgorithms(new AuthenticatedEncryptorConfiguration
+                {
+                    EncryptionAlgorithm = _hostEnvironment.IsProduction()
+                        ? EncryptionAlgorithm.AES_256_GCM
+                        : EncryptionAlgorithm.AES_256_CBC,
+                    ValidationAlgorithm = ValidationAlgorithm.HMACSHA512,
+                });
+
             services.AddCors(options =>
             {
                 var cors = _configuration.GetSection(CorsOptions.Key).Get<CorsOptions>();
 
-                options.DefaultPolicyName = cors.Name;
-
-                options.AddDefaultPolicy(builder =>
+                options.AddPolicy(cors.Name, builder =>
                 {
                     builder.WithOrigins(cors.Origins);
                     builder.SetIsOriginAllowedToAllowWildcardSubdomains();
-                    
 
                     if (cors.AllowAnyHeader)
                     {
@@ -72,21 +102,6 @@ namespace DusanMalusev
                 });
             });
 
-            services.AddDataProtection()
-                .PersistKeysToFileSystem(new DirectoryInfo(_configuration["Keys:StoragePath"]))
-                .ProtectKeysWithCertificate(new X509Certificate2(
-                    _configuration["Keys:Certificate:Path"],
-                    _configuration["Keys:Certificate:Password"])
-                )
-                .UseCryptographicAlgorithms(new AuthenticatedEncryptorConfiguration
-                {
-                    EncryptionAlgorithm = _hostEnvironment.IsProduction()
-                        ? EncryptionAlgorithm.AES_256_GCM
-                        : EncryptionAlgorithm.AES_256_CBC,
-                    ValidationAlgorithm = ValidationAlgorithm.HMACSHA512,
-                });
-
-            services.AddRazorPages();
 
             services.AddControllers(options =>
             {
@@ -95,25 +110,8 @@ namespace DusanMalusev
                 options.ReturnHttpNotAcceptable = true;
             });
 
-            services.AddOptions<CsrfCookie>()
-                .Bind(_configuration.GetSection(CsrfCookie.Key))
-                .ValidateDataAnnotations()
-                .ValidateOnStart();
-            
-            services.AddOptions<CorsOptions>()
-                .Bind(_configuration.GetSection(CorsOptions.Key))
-                .ValidateDataAnnotations()
-                .ValidateOnStart();
+            services.AddRazorPages();
 
-            services.AddOptions<SitemapOptions>()
-                .Bind(_configuration.GetSection(SitemapOptions.Key))
-                .ValidateDataAnnotations()
-                .ValidateOnStart();
-
-            services.AddOptions<ReCaptchaV3Settings>()
-                .Bind(_configuration.GetSection("Google:ReCaptchaV3"))
-                .ValidateDataAnnotations()
-                .ValidateOnStart();
 
             services.AddSingleton<IClock>(_ => SystemClock.Instance)
                 .AddRedisCache(
@@ -158,6 +156,8 @@ namespace DusanMalusev
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            var cors = _configuration.GetSection(CorsOptions.Key).Get<CorsOptions>();
+            
             // Configure the HTTP request pipeline.
             if (!env.IsDevelopment())
             {
@@ -171,13 +171,13 @@ namespace DusanMalusev
                 app.UseSerilogRequestLogging();
             }
 
-
-            app.UseForwardedHeaders(new ForwardedHeadersOptions
-            {
-                ForwardedHeaders = ForwardedHeaders.XForwardedFor |
-                                   ForwardedHeaders.XForwardedProto |
-                                   ForwardedHeaders.XForwardedHost,
-            });
+            //
+            // app.UseForwardedHeaders(new ForwardedHeadersOptions
+            // {
+            //     ForwardedHeaders = ForwardedHeaders.XForwardedFor |
+            //                        ForwardedHeaders.XForwardedProto |
+            //                        ForwardedHeaders.XForwardedHost,
+            // });
 
             app.UseMiddleware<CsrfMiddleware>();
 
@@ -185,8 +185,8 @@ namespace DusanMalusev
 
             app.UseRouting();
 
-            app.UseCors();
-            
+            app.UseCors(cors.Name);
+
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>

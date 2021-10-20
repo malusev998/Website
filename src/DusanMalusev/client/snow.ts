@@ -74,4 +74,4 @@ const particlesSnowEffect = async (snowItem: string) => {
     });
 };
 
-export { particlesSnowEffect };
+export default particlesSnowEffect;

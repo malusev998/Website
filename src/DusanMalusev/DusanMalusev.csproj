@@ -18,7 +18,9 @@
   </PropertyGroup> -->
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Cors" Version="2.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.HttpOverrides" Version="2.2.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Cors" Version="2.2.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.0-rc.2.21480.5" />
     <PackageReference Include="Microsoft.Extensions.Caching.StackExchangeRedis" Version="6.0.0-rc.2.21480.10" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="6.0.0-rc.2.21480.5">
@@ -56,6 +58,26 @@
   <ItemGroup>
     <None Remove="certificate.pfx" />
     <Content Include="certificate.pfx" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <_ContentIncludedByDefault Remove="wwwroot\dist\contact.c526f778.js" />
+    <_ContentIncludedByDefault Remove="wwwroot\dist\index.css" />
+    <_ContentIncludedByDefault Remove="wwwroot\dist\index.js" />
+    <_ContentIncludedByDefault Remove="wwwroot\dist\pathseg.0df3bca3.js" />
+    <_ContentIncludedByDefault Remove="wwwroot\dist\snow.f59cd02f.js" />
+    <_ContentIncludedByDefault Remove="wwwroot\dist\subscribe.02ff2263.js" />
+    <_ContentIncludedByDefault Remove="wwwroot\dist\subscribe.1b44a7b0.js" />
+    <_ContentIncludedByDefault Remove="wwwroot\dist\contact.14a0cf1c.js" />
+    <_ContentIncludedByDefault Remove="wwwroot\dist\contact.14a0cf1c.js.map" />
+    <_ContentIncludedByDefault Remove="wwwroot\dist\index.css.map" />
+    <_ContentIncludedByDefault Remove="wwwroot\dist\index.js.map" />
+    <_ContentIncludedByDefault Remove="wwwroot\dist\pathseg.c5266f95.js" />
+    <_ContentIncludedByDefault Remove="wwwroot\dist\pathseg.c5266f95.js.map" />
+    <_ContentIncludedByDefault Remove="wwwroot\dist\snow.865c0473.js" />
+    <_ContentIncludedByDefault Remove="wwwroot\dist\snow.865c0473.js.map" />
+    <_ContentIncludedByDefault Remove="wwwroot\dist\subscribe.8407b786.js" />
+    <_ContentIncludedByDefault Remove="wwwroot\dist\subscribe.8407b786.js.map" />
   </ItemGroup>
 
 </Project>

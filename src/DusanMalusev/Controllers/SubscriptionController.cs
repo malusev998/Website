@@ -26,6 +26,7 @@ namespace DusanMalusev.Controllers
 
             return response.Match<IActionResult>(
                 contact => Created("/api/subscription/new", contact),
+                _ => Conflict(new { Message = "Already subscribed!" }),
                 validation => UnprocessableEntity(validation.FirstOfAll()),
                 _ => StatusCode(StatusCodes.Status500InternalServerError)
             );

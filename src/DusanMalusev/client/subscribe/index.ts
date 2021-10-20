@@ -1,115 +1,87 @@
-import { ValidationError } from 'yup';
-import { Err } from '../error';
-import { http, HttpMethod } from '../http';
-import { execute, ready } from '../recaptcha';
-import { SubscriptionDTO } from './dto';
-import { Subscription } from './model';
-
-import { schema, SubscriptionValidationError } from './validation';
-
 import Swal from 'sweetalert2/dist/sweetalert2.js';
+import Http, { RECAPTCHA_TOKEN_FIELD } from '../http';
+import { execute, ready } from '../recaptcha';
+import validate from './validation';
+import { SubscribeRequest, SubscribeResponse } from './http';
+import handleError, { ServerValidations } from './errors';
 
-const subscribe = async (dto: SubscriptionDTO): Promise<Subscription | Err | SubscriptionValidationError> => {
-    try {
-        await schema.validate(dto, { recursive: true, abortEarly: false });
-        console.log('validated');
+const RECAPTCHA_EVENT = 'subscribe';
+const SUBSCRIBE_ENDPOINT = '/subscribe/new';
+
+enum Elements {
+    Form = 'subscribe-form',
+    Name = 'subscribe-form-name',
+    Email = 'subscribe-form-email',
+    NameError = 'subscribe-form-name-error',
+    EmailError = 'subscribe-form-email-error',
+}
+
+export default class Subscribe {
+    private client: Http<SubscribeResponse>;
+    private form: HTMLFormElement | null;
+    private name: HTMLInputElement | null;
+    private email: HTMLInputElement | null;
+
+    private nameError: HTMLElement | null;
+    private emailError: HTMLElement | null;
+
+    public constructor() {
+        this.client = new Http<SubscribeResponse>();
+    }
+
+    public addListener(): void {
+        this.form = document.getElementById(Elements.Form) as HTMLFormElement;
+        this.name = document.getElementById(Elements.Name) as HTMLInputElement;
+        this.email = document.getElementById(Elements.Email) as HTMLInputElement;
+
+        this.nameError = document.getElementById(Elements.NameError);
+        this.emailError = document.getElementById(Elements.EmailError);
+
+        this.form.addEventListener('submit', this.subscribe.bind(this));
+    }
+
+    private async subscribe(e: Event) {
+        e.preventDefault();
+        const name = this.name.value;
+        const email = this.email.value;
         
-        await ready();
+        try {
+            await validate(name, email);
 
-        console.log('ready');
-        
-        const token = await execute('contact');
+            await ready();
 
-        const res = await http('/subscribe/new', HttpMethod.POST, dto, null, token);
+            const token = await execute(RECAPTCHA_EVENT);
+            
+            const payload: SubscribeRequest = {
+                name,
+                email,
+                [RECAPTCHA_TOKEN_FIELD]: token,
+            }
 
-        const data = await res.json();
+            await this.client.post<SubscribeRequest, ServerValidations>(SUBSCRIBE_ENDPOINT, payload);
 
-        return {
-            id: data.id,
-            name: data.name,
-            email: data.email,
-            createdAt: new Date(data.createdAt),
-        };
-    } catch (err) {
-        console.error(err);
-        if (err instanceof ValidationError) {
-            const validationError: SubscriptionValidationError = { nameError: '', emailError: '' };
-            err.inner.forEach((item) => {
-                if (item.path === 'name') {
-                    validationError.nameError = item.errors[0];
-                } else if (item.path === 'email') {
-                    validationError.emailError = item.errors[0];
-                }
+            gtag('event', 'subscribe', {
+                event_category: 'subscription',
+                event_label: 'New user subscribed to news letters',
             });
 
-            return validationError;
+            Swal.fire({
+                title: 'Success',
+                text: 'You have successfully subscribed to newsletters',
+                icon: 'success',
+                timerProgressBar: true,
+            });
+        } catch (err) {
+            handleError(err, {
+                email: this.email,
+                emailError: this.emailError,
+                name: this.name,
+                nameError: this.nameError,
+            });
         }
-        return {
-            message: 'Try again please',
-        };
-    }
-};
-
-const subscribeFormHandler = (
-    nameEl: string,
-    emailEl: string,
-    nameErrorEl: string,
-    emailErrorEl: string
-) => async (e: Event) => {
-    e.preventDefault();
-    const name = document.getElementById(nameEl);
-    const email = document.getElementById(emailEl);
-    const nameError = document.getElementById(nameErrorEl);
-    const emailError = document.getElementById(emailErrorEl);
-
-    //@ts-ignore
-    const res = await subscribe({ name: name.value, email: email.value });
-    // Server error
-    if ('message' in res) {
-        Swal.fire({
-            title: 'Error',
-            text: res.message,
-            icon: 'error',
-            timerProgressBar: true,
-        });
-        return;
     }
 
-    // Validation Error
-    if ('nameError' in res && 'emailError' in res) {
-        if (res.nameError !== '') {
-            name.classList.add('input-error');
-
-            nameError.classList.remove('hidden');
-            nameError.innerText = res.nameError;
-        }
-
-        if (res.emailError !== '') {
-            email.classList.add('input-error');
-            emailError.classList.remove('hidden');
-            emailError.innerText = res.emailError;
-        }
-
-        setTimeout(() => {
-            nameError.classList.add('hidden');
-            emailError.classList.add('hidden');
-            email.classList.remove('input-error');
-            name.classList.remove('input-error');
-        }, 4000);
-        return;
+    public dispose(): void {
+        this.form.removeEventListener('submit', this.subscribe);
     }
-
-    gtag('event', 'subscribe', {
-        event_category: 'subscription',
-        event_label: 'New user subscribed to news letters',
-    })
-
-    Swal.fire({
-        title: 'Success',
-        text: 'You have successfully subscribed to newsletters',
-        icon: 'success',
-        timerProgressBar: true,
-    });
-};
-
-export { subscribeFormHandler };
+}

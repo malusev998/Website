@@ -1,13 +1,13 @@
-import { object, string, ValidationError } from 'yup';
+import { object, string } from "yup";
 
-export interface SubscriptionValidationError {
-    nameError: string;
-    emailError: string;
-}
-
-export const schema = object()
+const schema = object()
     .shape({
         name: string().required().max(50),
         email: string().required().email().max(150),
     });
 
+const validate = (name: string, email: string) => {
+    return schema.validate({ name, email }, { recursive: true, abortEarly: false });
+}
+
+export default validate;

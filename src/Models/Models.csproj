@@ -9,6 +9,7 @@
 
   <ItemGroup>
     <PackageReference Include="NodaTime" Version="3.0.7" />
+    <PackageReference Include="NodaTime.Serialization.SystemTextJson" Version="1.0.0" />
     <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="6.0.0-rc.2.21480.5" />
   </ItemGroup>
 

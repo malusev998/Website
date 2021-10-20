@@ -140,12 +140,12 @@
       this[globalName] = mainExports;
     }
   }
-})({"6q4Qk":[function(require,module,exports) {
+})({"bsomh":[function(require,module,exports) {
 var HMR_HOST = null;
 var HMR_PORT = null;
 var HMR_SECURE = false;
 var HMR_ENV_HASH = "4a236f9275d0a351";
-module.bundle.HMR_BUNDLE_ID = "04dd7b59d969d973";
+module.bundle.HMR_BUNDLE_ID = "b9251bb6e630de81";
 "use strict";
 function _createForOfIteratorHelper(o, allowArrayLike) {
     var it;
@@ -458,78 +458,52 @@ function hmrAcceptRun(bundle, id) {
     acceptedAssets[id] = true;
 }
 
-},{}],"1mazX":[function(require,module,exports) {
+},{}],"hz5rZ":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-var _subscribe = require("./subscribe");
-var _subscribeDefault = parcelHelpers.interopDefault(_subscribe);
+var _index = require("./contact/index");
+var _indexDefault = parcelHelpers.interopDefault(_index);
 var _snow = require("./snow");
 var _snowDefault = parcelHelpers.interopDefault(_snow);
 var _elements = require("./elements");
-const subscription = new _subscribeDefault.default();
+const contact = new _indexDefault.default();
 document.addEventListener('DOMContentLoaded', async ()=>{
     await _snowDefault.default(_elements.SNOW_EFFECT);
-    subscription.addListener();
+    contact.addListener();
 });
 window.addEventListener('beforeunload', ()=>{
-    subscription.dispose();
+    contact.dispose();
 });
 
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"ciiiV","./subscribe":"a58Mn","./snow":"fkozp","./elements":"7Z7sx"}],"ciiiV":[function(require,module,exports) {
-exports.interopDefault = function(a) {
-    return a && a.__esModule ? a : {
-        default: a
-    };
-};
-exports.defineInteropFlag = function(a) {
-    Object.defineProperty(a, '__esModule', {
-        value: true
-    });
-};
-exports.exportAll = function(source, dest) {
-    Object.keys(source).forEach(function(key) {
-        if (key === 'default' || key === '__esModule' || dest.hasOwnProperty(key)) return;
-        Object.defineProperty(dest, key, {
-            enumerable: true,
-            get: function() {
-                return source[key];
-            }
-        });
-    });
-    return dest;
-};
-exports.export = function(dest, destName, get) {
-    Object.defineProperty(dest, destName, {
-        enumerable: true,
-        get: get
-    });
-};
-
-},{}],"a58Mn":[function(require,module,exports) {
+},{"./contact/index":"13n2x","@parcel/transformer-js/src/esmodule-helpers.js":"ciiiV","./snow":"fkozp","./elements":"7Z7sx"}],"13n2x":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "default", ()=>Subscribe
+parcelHelpers.export(exports, "default", ()=>Contact
 );
 var _sweetalert2Js = require("sweetalert2/dist/sweetalert2.js");
 var _sweetalert2JsDefault = parcelHelpers.interopDefault(_sweetalert2Js);
 var _http = require("../http");
 var _httpDefault = parcelHelpers.interopDefault(_http);
 var _recaptcha = require("../recaptcha");
-var _validation = require("./validation");
-var _validationDefault = parcelHelpers.interopDefault(_validation);
 var _errors = require("./errors");
 var _errorsDefault = parcelHelpers.interopDefault(_errors);
-const RECAPTCHA_EVENT = 'subscribe';
-const SUBSCRIBE_ENDPOINT = '/subscribe/new';
+var _validate = require("./validate");
+var _validateDefault = parcelHelpers.interopDefault(_validate);
+const RECAPTCHA_EVENT = 'contact';
+const CONTACT_ENDPOINT = '/contact/new';
 var Elements;
 (function(Elements) {
-    Elements["Form"] = 'subscribe-form';
-    Elements["Name"] = 'subscribe-form-name';
-    Elements["Email"] = 'subscribe-form-email';
-    Elements["NameError"] = 'subscribe-form-name-error';
-    Elements["EmailError"] = 'subscribe-form-email-error';
+    Elements["Form"] = 'contact-form';
+    Elements["Name"] = 'contact-form-name';
+    Elements["Email"] = 'contact-form-email';
+    Elements["Subject"] = 'contact-form-subject';
+    Elements["Message"] = 'contact-form-message';
+    Elements["NameError"] = 'contact-form-name-error';
+    Elements["EmailError"] = 'contact-form-email-error';
+    Elements["SubjectError"] = 'contact-form-subject-error';
+    Elements["MessageError"] = 'contact-form-message-error';
 })(Elements || (Elements = {
 }));
-class Subscribe {
+class Contact {
     constructor(){
         this.client = new _httpDefault.default();
     }
@@ -537,49 +511,61 @@ class Subscribe {
         this.form = document.getElementById(Elements.Form);
         this.name = document.getElementById(Elements.Name);
         this.email = document.getElementById(Elements.Email);
+        this.subject = document.getElementById(Elements.Subject);
+        this.message = document.getElementById(Elements.Message);
         this.nameError = document.getElementById(Elements.NameError);
         this.emailError = document.getElementById(Elements.EmailError);
-        this.form.addEventListener('submit', this.subscribe.bind(this));
+        this.subjectError = document.getElementById(Elements.SubjectError);
+        this.messageError = document.getElementById(Elements.MessageError);
+        this.form.addEventListener('submit', this.contact.bind(this));
     }
-    async subscribe(e) {
+    async contact(e) {
         e.preventDefault();
         const name = this.name.value;
         const email = this.email.value;
+        const subject = this.subject.value;
+        const message = this.message.value;
         try {
-            await _validationDefault.default(name, email);
+            await _validateDefault.default(name, email, subject, message);
             await _recaptcha.ready();
             const token = await _recaptcha.execute(RECAPTCHA_EVENT);
             const payload = {
                 name,
                 email,
+                subject,
+                message,
                 [_http.RECAPTCHA_TOKEN_FIELD]: token
             };
-            await this.client.post(SUBSCRIBE_ENDPOINT, payload);
-            gtag('event', 'subscribe', {
-                event_category: 'subscription',
-                event_label: 'New user subscribed to news letters'
+            await this.client.post(CONTACT_ENDPOINT, payload);
+            gtag('event', 'contact', {
+                event_category: 'reach',
+                event_label: 'New contact email'
             });
             _sweetalert2JsDefault.default.fire({
                 title: 'Success',
-                text: 'You have successfully subscribed to newsletters',
+                text: 'You have successfully sent message',
                 icon: 'success',
                 timerProgressBar: true
             });
         } catch (err) {
             _errorsDefault.default(err, {
-                email: this.email,
-                emailError: this.emailError,
                 name: this.name,
-                nameError: this.nameError
+                email: this.email,
+                subject: this.subject,
+                message: this.message,
+                nameError: this.nameError,
+                emailError: this.emailError,
+                subjectError: this.subjectError,
+                messageError: this.messageError
             });
         }
     }
     dispose() {
-        this.form.removeEventListener('submit', this.subscribe);
+        this.form.removeEventListener('submit', this.contact);
     }
 }
 
-},{"sweetalert2/dist/sweetalert2.js":"2rUmd","../http":"1nIup","../recaptcha":"dJlOb","./validation":"8Ctrd","./errors":"cqMkB","@parcel/transformer-js/src/esmodule-helpers.js":"ciiiV"}],"2rUmd":[function(require,module,exports) {
+},{"sweetalert2/dist/sweetalert2.js":"2rUmd","../http":"1nIup","../recaptcha":"dJlOb","./errors":"aKnbK","./validate":"lfKab","@parcel/transformer-js/src/esmodule-helpers.js":"ciiiV"}],"2rUmd":[function(require,module,exports) {
 (function(global, factory) {
     typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() : typeof define === 'function' && define.amd ? define(factory) : (global = global || self, global.Sweetalert2 = factory());
 })(this, function() {
@@ -3588,7 +3574,37 @@ class ServerError extends HttpError {
     }
 }
 
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"ciiiV"}],"iYN03":[function(require,module,exports) {
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"ciiiV"}],"ciiiV":[function(require,module,exports) {
+exports.interopDefault = function(a) {
+    return a && a.__esModule ? a : {
+        default: a
+    };
+};
+exports.defineInteropFlag = function(a) {
+    Object.defineProperty(a, '__esModule', {
+        value: true
+    });
+};
+exports.exportAll = function(source, dest) {
+    Object.keys(source).forEach(function(key) {
+        if (key === 'default' || key === '__esModule' || dest.hasOwnProperty(key)) return;
+        Object.defineProperty(dest, key, {
+            enumerable: true,
+            get: function() {
+                return source[key];
+            }
+        });
+    });
+    return dest;
+};
+exports.export = function(dest, destName, get) {
+    Object.defineProperty(dest, destName, {
+        enumerable: true,
+        get: get
+    });
+};
+
+},{}],"iYN03":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "HttpMethod", ()=>HttpMethod
@@ -3645,26 +3661,43 @@ const execute = (action)=>new Promise((resolve, reject)=>{
     })
 ;
 
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"ciiiV"}],"8Ctrd":[function(require,module,exports) {
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"ciiiV"}],"aKnbK":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
+var _sweetalert2Js = require("sweetalert2/dist/sweetalert2.js");
+var _sweetalert2JsDefault = parcelHelpers.interopDefault(_sweetalert2Js);
 var _yup = require("yup");
-const schema = _yup.object().shape({
-    name: _yup.string().required().max(50),
-    email: _yup.string().required().email().max(150)
-});
-const validate = (name, email)=>{
-    return schema.validate({
-        name,
-        email
-    }, {
-        recursive: true,
-        abortEarly: false
+var _http = require("../http");
+var _validation = require("../validation");
+var _validationDefault = parcelHelpers.interopDefault(_validation);
+var _client = require("../validation/client");
+var _clientDefault = parcelHelpers.interopDefault(_client);
+const handleError = (error, elements)=>{
+    if (error instanceof _http.ServerValidationError) {
+        const errors = error.errors;
+        _validationDefault.default(elements.name, elements.nameError, errors.Name);
+        _validationDefault.default(elements.email, elements.emailError, errors.Email);
+        _validationDefault.default(elements.subject, elements.subjectError, errors.Subject);
+        _validationDefault.default(elements.message, elements.messageError, errors.Message);
+        return;
+    }
+    if (error instanceof _yup.ValidationError) {
+        _clientDefault.default(error, elements);
+        return;
+    }
+    console.log(error);
+    let message = 'An error has occurred, please try again later';
+    if (error instanceof _http.HttpError) message = error.message;
+    _sweetalert2JsDefault.default.fire({
+        title: 'Error',
+        text: message,
+        icon: 'error',
+        timerProgressBar: true
     });
 };
-exports.default = validate;
+exports.default = handleError;
 
-},{"yup":"gvf4u","@parcel/transformer-js/src/esmodule-helpers.js":"ciiiV"}],"gvf4u":[function(require,module,exports) {
+},{"sweetalert2/dist/sweetalert2.js":"2rUmd","yup":"gvf4u","../http":"1nIup","../validation":"jNDhn","@parcel/transformer-js/src/esmodule-helpers.js":"ciiiV","../validation/client":"cDp8w"}],"gvf4u":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "mixed", ()=>_mixed.create
@@ -9287,41 +9320,7 @@ function setLocale(custom) {
 }
 exports.default = setLocale;
 
-},{"./locale":"8waLz","@parcel/transformer-js/src/esmodule-helpers.js":"ciiiV"}],"cqMkB":[function(require,module,exports) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-var _sweetalert2Js = require("sweetalert2/dist/sweetalert2.js");
-var _sweetalert2JsDefault = parcelHelpers.interopDefault(_sweetalert2Js);
-var _yup = require("yup");
-var _http = require("../http");
-var _validation = require("../validation");
-var _validationDefault = parcelHelpers.interopDefault(_validation);
-var _client = require("../validation/client");
-var _clientDefault = parcelHelpers.interopDefault(_client);
-const handleError = (error, elements)=>{
-    if (error instanceof _http.ServerValidationError) {
-        const errors = error.errors;
-        _validationDefault.default(elements.name, elements.nameError, errors.Name);
-        _validationDefault.default(elements.email, elements.emailError, errors.Email);
-        return;
-    }
-    if (error instanceof _yup.ValidationError) {
-        _clientDefault.default(error, elements);
-        return;
-    }
-    console.log(error);
-    let message = 'An error has occurred, please try again later';
-    if (error instanceof _http.HttpError) message = error.message;
-    _sweetalert2JsDefault.default.fire({
-        title: 'Error',
-        text: message,
-        icon: 'error',
-        timerProgressBar: true
-    });
-};
-exports.default = handleError;
-
-},{"sweetalert2/dist/sweetalert2.js":"2rUmd","yup":"gvf4u","../http":"1nIup","../validation":"jNDhn","../validation/client":"cDp8w","@parcel/transformer-js/src/esmodule-helpers.js":"ciiiV"}],"jNDhn":[function(require,module,exports) {
+},{"./locale":"8waLz","@parcel/transformer-js/src/esmodule-helpers.js":"ciiiV"}],"jNDhn":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 const addValidation = (element, errorEl, error, timeout = 4000)=>{
@@ -9351,7 +9350,29 @@ const showClientValidation = (error, elements)=>{
 };
 exports.default = showClientValidation;
 
-},{"./index":"jNDhn","@parcel/transformer-js/src/esmodule-helpers.js":"ciiiV"}],"fkozp":[function(require,module,exports) {
+},{"./index":"jNDhn","@parcel/transformer-js/src/esmodule-helpers.js":"ciiiV"}],"lfKab":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+var _yup = require("yup");
+const schema = _yup.object().shape({
+    name: _yup.string().required().max(50),
+    email: _yup.string().required().email().max(150),
+    subject: _yup.string().required().max(150),
+    message: _yup.string().required().max(2000)
+});
+const validate = (name, email, subject, message)=>schema.validate({
+        name,
+        email,
+        subject,
+        message
+    }, {
+        recursive: true,
+        abortEarly: false
+    })
+;
+exports.default = validate;
+
+},{"yup":"gvf4u","@parcel/transformer-js/src/esmodule-helpers.js":"ciiiV"}],"fkozp":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 var _tsparticles = require("tsparticles");
@@ -19892,7 +19913,7 @@ async function loadPolygonMaskPlugin(tsParticles) {
 }
 exports.loadPolygonMaskPlugin = loadPolygonMaskPlugin;
 
-},{"./PolygonMaskInstance":"hUTz2","./Options/Classes/PolygonMask":"h2upW","./Enums":"iD5qi","../../Utils":"iU3t1","6ad381655b249036":"9ivD0"}],"hUTz2":[function(require,module,exports) {
+},{"./PolygonMaskInstance":"hUTz2","./Options/Classes/PolygonMask":"h2upW","./Enums":"iD5qi","../../Utils":"iU3t1","6ad381655b249036":"hJK6O"}],"hUTz2":[function(require,module,exports) {
 "use strict";
 Object.defineProperty(exports, "__esModule", {
     value: true
@@ -20578,8 +20599,8 @@ function segmentBounce(start, stop, velocity) {
 }
 exports.segmentBounce = segmentBounce;
 
-},{"../../Utils":"iU3t1"}],"9ivD0":[function(require,module,exports) {
-module.exports = require("./helpers/browser/js-loader")(require('./helpers/bundle-url').getBundleURL('pTCE9') + "pathseg.c5266f95.js" + "?" + Date.now()).catch((err)=>{
+},{"../../Utils":"iU3t1"}],"hJK6O":[function(require,module,exports) {
+module.exports = require("./helpers/browser/js-loader")(require('./helpers/bundle-url').getBundleURL('fTwnv') + "pathseg.c5266f95.js" + "?" + Date.now()).catch((err)=>{
     delete module.bundle.cache[module.id];
     throw err;
 }).then(()=>module.bundle.root('jJ1lf')
@@ -21077,6 +21098,6 @@ parcelHelpers.export(exports, "SNOW_EFFECT", ()=>SNOW_EFFECT
 );
 const SNOW_EFFECT = 'snow-effect';
 
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"ciiiV"}]},["6q4Qk","1mazX"], "1mazX", "parcelRequire94cf")
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"ciiiV"}]},["bsomh","hz5rZ"], "hz5rZ", "parcelRequire94cf")
 
-//# sourceMappingURL=index.js.map
+//# sourceMappingURL=contact.js.map

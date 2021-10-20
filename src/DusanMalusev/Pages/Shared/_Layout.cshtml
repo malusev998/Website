@@ -10,6 +10,7 @@
 
     var googleAnalyticsKey = _config.GetValue<string>("Google:Analytics");
     var googleRecaptchaPublicKey = _config.GetValue<string>("Google:ReCaptchaV3:PublicKey");
+    var googleOptimize = _config.GetValue<string>("Google:Optimize");
 }
 
 
@@ -35,8 +36,8 @@
     <meta property="og:site_name" content="Dusan Malusev's Website"/>
 
     <link rel="stylesheet" href="~/dark.min.css" asp-append-version="true"/>
-    <link rel="stylesheet" href="~/dist/index.css" asp-append-version="true"/>
-<script async src="https://www.googleoptimize.com/optimize.js?id=OPT-5FKMQ98"></script>
+    <link rel="stylesheet" href="~/dist/main.css" asp-append-version="true"/>
+<script async src="https://www.googleoptimize.com/optimize.js?id=@googleOptimize"></script>
 </head>
 
 <body class="min-h-screen text-white bg-main-dark-900">
@@ -54,10 +55,11 @@
 <script src="https://www.google.com/recaptcha/api.js?render=@googleRecaptchaPublicKey"></script>
 
 
-<script src="~/analytics.js"></script>
-<script src="~/dist/index.js" asp-append-version="true"></script>
+<script src="~/analytics.js" asp-append-version="true"></script>
 
 @await RenderSectionAsync("Scripts", required: false)
+
+<script src="~/dist/main.js" asp-append-version="true"></script>
 </body>
 
 </html>

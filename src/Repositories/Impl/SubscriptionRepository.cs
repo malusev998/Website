@@ -1,4 +1,5 @@
 using Database;
+using Errors;
 using LanguageExt.Common;
 using Microsoft.EntityFrameworkCore;
 using Models;
@@ -17,6 +18,16 @@ namespace Repositories.Impl
         {
             _dbContext = dbContext;
             _clock = clock;
+        }
+
+        public async Task<Result<Subscription>> GetOneAsync(string email, CancellationToken cancellationToken)
+        {
+            var subscription = await _dbContext.Subscriptions.Where(s => s.Email == email)
+                .SingleOrDefaultAsync(cancellationToken);
+
+            return subscription == null
+                ? new Result<Subscription>(new RecordNotFound())
+                : new Result<Subscription>(subscription);
         }
 
         public async Task<Result<Subscription>> CreateAsync(CreateSubscriber.Request createSubscriber,
