@@ -16,7 +16,7 @@ enum Elements {
     EmailError = 'subscribe-form-email-error',
 }
 
-export default class Subscribe {
+export class Subscribe {
     private client: Http<SubscribeResponse>;
     private form: HTMLFormElement | null;
     private name: HTMLInputElement | null;

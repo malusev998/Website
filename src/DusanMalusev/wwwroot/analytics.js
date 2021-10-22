@@ -1,16 +1,18 @@
-window.dataLayer = window.dataLayer || [];
-
 function gtag() {
   dataLayer.push(arguments);
 }
 
-gtag('js', new Date());
+document.addEventListener('DOMContentLoaded', () => {
+  window.dataLayer = window.dataLayer || [];
 
-const config = {
-  currency: 'EUR',
-  transport_type: 'beacon',
-};
+  gtag('js', new Date());
 
-gtag('config', 'UA-187169857-1', config);
+  const config = {
+    currency: 'EUR',
+    transport_type: 'beacon',
+  };
 
-window.grecaptcha = grecaptcha;
+  gtag('config', 'UA-187169857-1', config);
+
+  window.grecaptcha = grecaptcha;
+});

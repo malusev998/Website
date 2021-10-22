@@ -19,6 +19,8 @@ else
 		endif
 	endif
 endif
+
+
 CONF = Release
 OUT_DIR=$(PWD)
 BIN_DIR = src/DusanMalusev/bin/Release/net6.0/$(RUNTIME)

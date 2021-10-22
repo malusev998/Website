@@ -37,7 +37,7 @@
 
     <link rel="stylesheet" href="~/dark.min.css" asp-append-version="true"/>
     <link rel="stylesheet" href="~/dist/main.css" asp-append-version="true"/>
-<script async src="https://www.googleoptimize.com/optimize.js?id=@googleOptimize"></script>
+    <script async src="https://www.googleoptimize.com/optimize.js?id=@googleOptimize"></script>
 </head>
 
 <body class="min-h-screen text-white bg-main-dark-900">
@@ -51,11 +51,11 @@
 
 </main>
 
-<script src="https://www.googletagmanager.com/gtag/js?id=@googleAnalyticsKey"></script>
-<script src="https://www.google.com/recaptcha/api.js?render=@googleRecaptchaPublicKey"></script>
+<script defer src="https://www.googletagmanager.com/gtag/js?id=@googleAnalyticsKey"></script>
+<script async defer src="https://www.google.com/recaptcha/api.js?render=@googleRecaptchaPublicKey"></script>
 
 
-<script src="~/analytics.js" asp-append-version="true"></script>
+<script async defer src="~/analytics.js" asp-append-version="true"></script>
 <script src="~/dist/main.js" asp-append-version="true"></script>
 
 @await RenderSectionAsync("Scripts", required: false)

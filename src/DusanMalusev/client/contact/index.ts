@@ -22,7 +22,7 @@ enum Elements {
     MessageError = 'contact-form-message-error',
 }
 
-export default class Contact {
+export class Contact {
     private client: Http<ContactResponse>;
 
     private form: HTMLFormElement;
