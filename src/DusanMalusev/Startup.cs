@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.DataProtection.AuthenticatedEncryption;
 using Microsoft.AspNetCore.DataProtection.AuthenticatedEncryption.ConfigurationModel;
 using Microsoft.AspNetCore.HttpOverrides;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using NodaTime;
 using RecaptchaV3;
 using Repositories;
@@ -35,6 +36,7 @@ namespace DusanMalusev
 
         public void ConfigureServices(IServiceCollection services)
         {
+            services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddOptions<CsrfCookie>()
                 .Bind(_configuration.GetSection(CsrfCookie.Key))
                 .ValidateDataAnnotations()

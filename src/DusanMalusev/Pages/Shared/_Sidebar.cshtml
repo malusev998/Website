@@ -2,21 +2,21 @@
     <section class="sidebar flex w-3/4 sm:w-1/2 lg:w-1/5 fixed z-50 transform -translate-x-full lg:translate-x-0 bg-main-dark-700 h-screen flex-col justify-between border-r-2 border-gray-800 transition-all">
         <section class="flex flex-none border-b-2 border-gray-800 flex-col mt-5 pb-4 items-center justify-center">
             <div class="border-4 border-gray-700 w-3/6 rounded-full">
-                <img class="w-full rounded-full h-full" src="~/img/malusev.png" alt="Dusan Malusev" asp-append-version="true"/>
+                <img class="w-full rounded-full h-full" src="~/img/malusev.png" alt="Dusan Malusev" asp-append-version="true" loading="lazy" width="140" height="130"/>
             </div>
             <h2 class="text-2xl text-gray-200 hover:text-gray-100 text-center mt-8">Dusan Malusev</h2>
         </section>
         <nav class="flex-grow flex items-center">
             <ul class="flex flex-col justify-between w-full">
                 <li class="h-12 hover:bg-blue-nav">
-                    <a class="flex w-full h-full text-gray-400 uppercase text-xl active hover:text-white justify-center items-center"
-                       asp-page="/Index">
+                    <a class="flex w-full h-full text-gray-400 uppercase text-xl hover:text-white justify-center items-center"
+                       asp-page="/Index" is-active-page>
                         Home
                     </a>
                 </li>
                 <li class="h-12 hover:bg-blue-nav">
                     <a class="flex w-full h-full text-gray-400 uppercase text-xl hover:text-white justify-center items-center"
-                       asp-page="/About">
+                       asp-page="/About" is-active-page>
                         About
                     </a>
                 </li>
@@ -32,7 +32,7 @@
             *@
                 <li class="h-12 hover:bg-blue-nav">
                     <a class="flex w-full h-full text-gray-400 uppercase text-xl hover:text-white justify-center items-center"
-                       asp-page="/Contact">
+                       asp-page="/Contact" is-active-page>
                         Contact
                     </a>
                 </li>
