@@ -54,11 +54,11 @@ jobs:
 #      - name: 'Install Node Modules'
 #        run: npm install
 #        working-directory: src/DusanMalusev
-      - name: 'Build Frontend for Production'
-        working-directory: src/DusanMalusev/
-        run: |
-          rm -rf wwwroot/dist
-          npm run prod
+#      - name: 'Build Frontend for Production'
+#        working-directory: src/DusanMalusev/
+#        run: |
+#          rm -rf wwwroot/dist
+#          npm run prod
         env:
           NODE_ENV: production
           API_URL: ${{ secrets.API_URL }}
