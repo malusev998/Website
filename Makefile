@@ -43,7 +43,7 @@ restore:
 	@dotnet restore -r $(RUNTIME)
 
 .PHONY: test
-test: restore
+test:
 	@ASPNETCORE_ENVIRONMENT=Testing dotnet test --no-restore --no-build --collect:"XPlat Code Coverage" /p:CollectCoverage=true /p:CoverletOutputFormat=opencover
 
 .PHONY: drop

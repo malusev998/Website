@@ -3,7 +3,7 @@ on:
     tags:
       - 'v*'
 jobs:
-  test:
+  deploy:
     services:
       postgres:
         image: postgres:14-alpine
@@ -67,17 +67,17 @@ jobs:
         LOG_ROCKET: ${{ secrets.LOG_ROCKET }}
     - name: 'Building the API'
       run: make RUNTIME="linux-x64" build-prod
-    # - name: 'Running Tests'
-    #   run: make RUNTIME="linux-x64" test
-    #   env:
-    #     ASPNETCORE_ENVIRONMENT: Testing
-    #     ConnectionStrings__DusanMalusevPostgres: 'Host=127.0.0.1;Port=5432;Username=postgres;Password=postgres;Timezone=UTC;'
-    #     ConnectionStrings__DefaultRedis: '127.0.0.1:6379,resolveDns=true,allowAdmin=true,connectTimeout=200,connectTimeout=10,keepAlive=10,name=DefaultRedisConnection'
-    #     ConnectionStrings__CacheRedis: '127.0.0.1:6379,resolveDns=true,allowAdmin=false,connectTimeout=200,connectTimeout=10,keepAlive=10,name=RedisCacheConnection'
-    #     DetailedErrors: true
-    #     Google__ReCaptchaV3__SecretKey: ${{ secrets.RECAPTCHA_SECRET_KEY }}
-    #     Google__ReCaptchaV3__PublicKey: ${{ secrets.RECAPTCHA_PUBLIC_KEY }}
-    #     Google__Analytics: ${{ secrets.GOOGLE_ANALYTICS }}
+    - name: 'Running Tests'
+      run: make RUNTIME="linux-x64" test
+      env:
+        ASPNETCORE_ENVIRONMENT: Testing
+        ConnectionStrings__DusanMalusevPostgres: 'Host=127.0.0.1;Port=5432;Username=postgres;Password=postgres;Timezone=UTC;'
+        ConnectionStrings__DefaultRedis: '127.0.0.1:6379,resolveDns=true,allowAdmin=true,connectTimeout=200,connectTimeout=10,keepAlive=10,name=DefaultRedisConnection'
+        ConnectionStrings__CacheRedis: '127.0.0.1:6379,resolveDns=true,allowAdmin=false,connectTimeout=200,connectTimeout=10,keepAlive=10,name=RedisCacheConnection'
+        DetailedErrors: true
+        Google__ReCaptchaV3__SecretKey: ${{ secrets.RECAPTCHA_SECRET_KEY }}
+        Google__ReCaptchaV3__PublicKey: ${{ secrets.RECAPTCHA_PUBLIC_KEY }}
+        Google__Analytics: ${{ secrets.GOOGLE_ANALYTICS }}
     - name: Package
       run: |
          make RUNTIME="linux-x64" publish

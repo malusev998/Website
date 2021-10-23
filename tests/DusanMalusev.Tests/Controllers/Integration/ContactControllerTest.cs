@@ -1,46 +1,47 @@
 using System;
 using System.Net;
-using System.Net.Http;
 using System.Net.Http.Json;
 using System.Text.Json;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Transfer.Contact;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace DusanMalusev.Tests.Controllers.Integration
 {
     public class ContactControllerTest : IClassFixture<Application>, IDisposable
     {
         private readonly Application _application;
-        private readonly HttpClient _client;
 
-        public ContactControllerTest(Application application)
+        public ContactControllerTest(Application application, ITestOutputHelper output)
         {
             _application = application;
-            _client = _application.CreateClient();
+            _application.Output = output;
         }
 
         [Fact]
         public async Task Should_Create_New_Contact()
         {
+            using var client = await _application.CreateCsrfClientAsync();
 
             var request = new CreateContact.Request
             {
-                Email = "malusevd99@gmail.com",
+                Email = "test@test.com",
                 Message = "Hello World Message",
                 Name = "Dusan Malusev",
                 Subject = "Test Message Subject"
             };
 
-            var response = await _client.PostAsJsonAsync("/api/contact/new", request);
+            var response = await client.PostAsJsonAsync("/api/contact/new", request);
 
             response.StatusCode
                 .Should()
                 .Be(HttpStatusCode.Created);
 
-            var stream = await response.Content.ReadAsStreamAsync();
-            var data = await JsonSerializer.DeserializeAsync<CreateContact.Response>(stream);
+            var data = await JsonSerializer.DeserializeAsync<CreateContact.Response>(
+                await response.Content.ReadAsStreamAsync()
+            );
 
             data.Should().NotBeNull();
             data!.Id.Should().BePositive();
@@ -52,9 +53,6 @@ namespace DusanMalusev.Tests.Controllers.Integration
 
         public void Dispose()
         {
-            _application.Dispose();
-            _client.Dispose();
-            GC.SuppressFinalize(this);
         }
     }
 }
