@@ -35,7 +35,7 @@ namespace RecaptchaV3
 
             var token = values[0];
 
-            var ip = context.HttpContext.Connection.RemoteIpAddress.ToString();
+            var ip = context.HttpContext.Connection.RemoteIpAddress?.ToString();
 
             var result = await _service.VerifyAsync(
                 token,

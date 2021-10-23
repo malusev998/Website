@@ -1,0 +1,79 @@
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+jobs:
+  build:
+    services:
+      postgres:
+        image: postgres:14-alpine
+        env:
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_USER: postgres
+          POSTGRES_DB: dusanmalusev
+        ports:
+          - '5432:5432'
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+      redis:
+        image: redis:6-alpine
+        ports:
+          - '6379:6379'
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+#      - uses: actions/cache@v2
+#        with:
+#          path: ~/.npm
+#          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+#          restore-keys: |
+#            ${{ runner.os }}-node-
+#      - uses: actions/setup-node@v2
+#        name: 'Setup NodeJS'
+#        with:
+#          node-version: '16'
+#          cache: 'npm'
+#          cache-dependency-path: src/DusanMalusev/package-lock.json
+      - name: Setup DotNet
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: '6.0.x'
+          include-prerelease: true
+      - name: 'Add Sertificates'
+        run: make certificate
+#      - name: 'Install Node Modules'
+#        run: npm install
+#        working-directory: src/DusanMalusev
+#      - name: 'Build Frontend for Production'
+#        working-directory: src/DusanMalusev/
+#        run: |
+#          rm -rf wwwroot/dist
+#          npm run prod
+        env:
+          NODE_ENV: production
+          API_URL: ${{ secrets.API_URL }}
+          RECAPTCHA_FRONTEND_URL: ${{ secrets.RECAPTCHA_PUBLIC_KEY }}
+          LOG_ROCKET: ${{ secrets.LOG_ROCKET }}
+      - name: 'Building the API'
+        run: make RUNTIME="linux-x64" CONF="Debug" build-prod
+      - name: 'Running Tests'
+        run: make RUNTIME="linux-x64" test
+        env:
+          ASPNETCORE_ENVIRONMENT: Testing
+          ConnectionStrings__DusanMalusevPostgres: 'Host=127.0.0.1;Port=5432;Username=postgres;Password=postgres;Timezone=UTC;'
+          ConnectionStrings__DefaultRedis: '127.0.0.1:6379,resolveDns=true,allowAdmin=true,connectTimeout=200,connectTimeout=10,keepAlive=10,name=DefaultRedisConnection'
+          ConnectionStrings__CacheRedis: '127.0.0.1:6379,resolveDns=true,allowAdmin=false,connectTimeout=200,connectTimeout=10,keepAlive=10,name=RedisCacheConnection'
+          DetailedErrors: true
+          Google__ReCaptchaV3__SecretKey: ${{ secrets.RECAPTCHA_SECRET_KEY }}
+          Google__ReCaptchaV3__PublicKey: ${{ secrets.RECAPTCHA_PUBLIC_KEY }}
+          Google__Analytics: ${{ secrets.GOOGLE_ANALYTICS }}

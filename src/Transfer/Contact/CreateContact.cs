@@ -1,4 +1,5 @@
-﻿using Errors;
+﻿using System.Text.Json.Serialization;
+using Errors;
 using MediatR;
 using NodaTime;
 using OneOf;
@@ -17,11 +18,22 @@ namespace Transfer.Contact
 
         public record Response
         {
+            [JsonPropertyName("id")]
             public long Id { get; set; }
+            
+            [JsonPropertyName("name")]
             public string Name { get; set; } = null!;
+            
+            [JsonPropertyName("email")]
             public string Email { get; set; } = null!;
+            
+            [JsonPropertyName("subject")]
             public string Subject { get; set; } = null!;
+            
+            [JsonPropertyName("message")]
             public string Message { get; set; } = null!;
+            
+            [JsonPropertyName("createdAt")]
             public ZonedDateTime CreatedAt { get; set; }
         }
     }

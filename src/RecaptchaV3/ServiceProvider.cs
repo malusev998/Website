@@ -4,12 +4,17 @@ using Polly;
 
 namespace RecaptchaV3
 {
-
     public static class ServiceProvider
     {
         internal const string ClientName = "ReCaptchaV3Client";
 
-        public static IServiceCollection AddReCaptchaV3(this IServiceCollection services, int retries = 3, int wait = 100)
+        public static IServiceCollection AddReCaptchaV3Testing(this IServiceCollection services)
+        {
+            return services.AddSingleton<IReCaptchaService, Testing.ReCaptchaService>();
+        }
+
+        public static IServiceCollection AddReCaptchaV3(this IServiceCollection services, int retries = 3,
+            int wait = 100)
         {
             services.AddHttpClient<IReCaptchaService, ReCaptchaV3Service>(ClientName, (provider, client) =>
                 {
