@@ -65,7 +65,7 @@ jobs:
           RECAPTCHA_FRONTEND_URL: ${{ secrets.RECAPTCHA_PUBLIC_KEY }}
           LOG_ROCKET: ${{ secrets.LOG_ROCKET }}
       - name: 'Building the API'
-        run: make RUNTIME="linux-x64" build-prod
+        run: make RUNTIME="linux-x64" CONF="Debug" build-prod
       - name: 'Running Tests'
         run: make RUNTIME="linux-x64" test
         env:
