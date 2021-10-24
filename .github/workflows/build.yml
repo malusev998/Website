@@ -72,7 +72,7 @@ jobs:
       - name: 'Building the API'
         run: make RUNTIME="linux-x64" CONF="Debug" build-prod
       - name: 'Running Tests'
-        run: make RUNTIME="linux-x64" test
+        run: make RUNTIME="linux-x64" CONF="Debug" test
         env:
           ASPNETCORE_ENVIRONMENT: Testing
           ConnectionStrings__DusanMalusevPostgres: 'Host=127.0.0.1;Port=5432;Username=postgres;Password=postgres;Timezone=UTC;'
