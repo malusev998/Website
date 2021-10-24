@@ -41,6 +41,8 @@ namespace DusanMalusev.Controllers.Email
                 out var written
             );
 
+            _logger.LogInformation("Bytes Written: {Bytes} Length: {Length}", written, length);
+
             if (status != OperationStatus.Done)
             {
                 _logger.LogError("Cannot decode public key");
@@ -56,7 +58,7 @@ namespace DusanMalusev.Controllers.Email
             // Base64 Encoded
             var signatureValues = Request.Headers[WebhookParser.SIGNATURE_HEADER_NAME];
 
-            if (signatureValues.Count < 0 || string.IsNullOrWhiteSpace(signatureValues[0]))
+            if (signatureValues.Count < 1 || string.IsNullOrWhiteSpace(signatureValues[0]))
             {
                 _logger.LogError(
                     "Signature Header not found or empty: {HeaderName}: {@Values}",
@@ -72,7 +74,7 @@ namespace DusanMalusev.Controllers.Email
 
             var timestampValues = Request.Headers[WebhookParser.TIMESTAMP_HEADER_NAME];
 
-            if (timestampValues.Count < 0 || string.IsNullOrWhiteSpace(timestampValues[0]))
+            if (timestampValues.Count < 1 || string.IsNullOrWhiteSpace(timestampValues[0]))
             {
                 _logger.LogError(
                     "Timestamp Header not found or empty: {HeaderName}: {@Values}",
