@@ -32,6 +32,11 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
+      - name: Cache ~/.nuget/packages
+        uses: actions/cache@v2
+        with:
+          path: ~/.nuget/packages
+          key: ${{ runner.os }}-${{ hashFiles('src/**/*.csproj') }}
 #      - uses: actions/cache@v2
 #        with:
 #          path: ~/.npm

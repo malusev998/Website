@@ -1,6 +1,4 @@
 using Microsoft.AspNetCore.Html;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Razor.TagHelpers;
 
 namespace DusanMalusev.Helpers;
@@ -11,16 +9,12 @@ public class ActiveClassTagHelper : TagHelper
     private const string ActiveAttribute = "is-active-page";
 
     private readonly IHttpContextAccessor _contextAccessor;
-    private readonly ILogger<ActiveClassTagHelper> _logger;
-
-    [HtmlAttributeNotBound] [ViewContext] public ViewContext? ViewContext { get; set; }
-
+    
     [HtmlAttributeName("asp-page")] public string? Page { get; set; }
 
-    public ActiveClassTagHelper(IHttpContextAccessor contextAccessor, ILogger<ActiveClassTagHelper> logger)
+    public ActiveClassTagHelper(IHttpContextAccessor contextAccessor)
     {
         _contextAccessor = contextAccessor;
-        _logger = logger;
     }
 
     public override void Process(TagHelperContext context, TagHelperOutput output)
@@ -28,9 +22,6 @@ public class ActiveClassTagHelper : TagHelper
         base.Process(context, output);
 
         var currentPage = _contextAccessor.HttpContext?.Request.Path.Value;
-        
-        _logger.LogInformation("Current Route: {CurrentRoute} Page: {Page}", currentPage, Page);
-        
         
         if (string.IsNullOrWhiteSpace(Page))
         {
@@ -49,7 +40,7 @@ public class ActiveClassTagHelper : TagHelper
         }
 
         var classAttrObj = output.Attributes.FirstOrDefault(a => a.Name == "class");
-
+        
         if (classAttrObj is null)
         {
             classAttrObj = new TagHelperAttribute("class", "active");

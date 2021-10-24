@@ -1,4 +1,3 @@
-using System;
 using System.Net;
 using System.Net.Http.Json;
 using System.Text.Json;
@@ -10,7 +9,7 @@ using Xunit.Abstractions;
 
 namespace DusanMalusev.Tests.Controllers.Integration
 {
-    public class ContactControllerTest : IClassFixture<Application>, IDisposable
+    public class ContactControllerTest : IClassFixture<Application>
     {
         private readonly Application _application;
 
@@ -49,10 +48,6 @@ namespace DusanMalusev.Tests.Controllers.Integration
             data.Email.Should().Be(request.Email);
             data.Subject.Should().Be(request.Subject);
             data.Message.Should().Be(request.Message);
-        }
-
-        public void Dispose()
-        {
         }
     }
 }

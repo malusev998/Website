@@ -12,13 +12,13 @@ namespace Transfer.Subscription
             public string? Name { get; set; }
             public string? Email { get; set; }
         }
-
+        
         public record Response
         {
-            public long Id { get; set; }
-            public string Name { get; set; } = null!;
-            public string Email { get; set; } = null!;
-            public ZonedDateTime CreatedAt { get; set; }
+            public long Id { get; init; }
+            public string Name { get; init; } = null!;
+            public string Email { get; init; } = null!;
+            public ZonedDateTime CreatedAt { get; init; }
         }
     }
 }

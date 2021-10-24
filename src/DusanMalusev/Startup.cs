@@ -55,6 +55,10 @@ namespace DusanMalusev
             services.AddOptions<ReCaptchaV3Settings>()
                 .Bind(_configuration.GetSection("Google:ReCaptchaV3"))
                 .ValidateDataAnnotations();
+            
+            services.AddOptions<SendGridOptions>()
+                .Bind(_configuration.GetSection("SendGrid"))
+                .ValidateDataAnnotations();
 
             services.AddDataProtection()
                 .PersistKeysToFileSystem(new DirectoryInfo(_configuration["Keys:StoragePath"]))

@@ -21,22 +21,20 @@ namespace DusanMalusev.Exceptions
         {
             var exception = context.Exception;
 
-            if (exception == null)
+            switch (exception)
             {
-                return;
-            }
-
-            if (exception is ValidationException validationException)
-            {
-                context.Result = HandleValidationException(validationException);
-                context.ExceptionHandled = true;
-                return;
+                case null:
+                    return;
+                case ValidationException validationException:
+                    context.Result = HandleValidationException(validationException);
+                    context.ExceptionHandled = true;
+                    return;
             }
 
             _logger.LogError(
                 "An exception has been thrown: Message={Exception} Method={Method}",
-                exception?.Message,
-                exception?.TargetSite?.Name
+                exception.Message,
+                exception.TargetSite?.Name
             );
 
             context.Result = new ObjectResult(new { Message = "An error has occurred! Please Try again later" })
@@ -51,11 +49,9 @@ namespace DusanMalusev.Exceptions
         {
         }
 
-        protected ObjectResult HandleValidationException(ValidationException exception)
-        {
-            var validationError = new ValidationError(exception.Errors);
-
-            return new UnprocessableEntityObjectResult(validationError.FirstOfAll());
-        }
+        private static ObjectResult HandleValidationException(ValidationException exception)
+            => new UnprocessableEntityObjectResult(
+                new ValidationError(exception.Errors).FirstOfAll()
+            );
     }
 }

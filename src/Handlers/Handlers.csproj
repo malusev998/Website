@@ -8,11 +8,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="FluentValidation" Version="10.3.3" />
+    <PackageReference Include="FluentValidation" Version="10.3.4" />
     <PackageReference Include="MediatR" Version="9.0.0" />
     <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="9.0.0" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="6.0.0-rc.2.21480.5" />
     <PackageReference Include="StackExchange.Redis" Version="2.2.79" />
+    <PackageReference Include="StrongGrid" Version="0.82.0" />
   </ItemGroup>
 
   <ItemGroup>
@@ -22,4 +23,7 @@
     <ProjectReference Include="..\Transfer\Transfer.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Remove="SendGrid" />
+  </ItemGroup>
 </Project>

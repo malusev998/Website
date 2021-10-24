@@ -18,9 +18,7 @@ namespace Crypto.Impl
             if (status != OperationStatus.Done)
                 throw new Exception("Error while encoding bytes to UTF8 Base64");
 
-            var key = Encoding.UTF8.GetString(output[..written]);
-
-            return key;
+            return Encoding.UTF8.GetString(output[..written]);
         }
     }
 }

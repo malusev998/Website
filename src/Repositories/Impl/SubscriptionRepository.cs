@@ -22,7 +22,9 @@ namespace Repositories.Impl
 
         public async Task<Result<Subscription>> GetOneAsync(string email, CancellationToken cancellationToken)
         {
-            var subscription = await _dbContext.Subscriptions.Where(s => s.Email == email)
+            var subscription = await _dbContext.Subscriptions
+                .Where(s => s.Email == email)
+                .AsNoTracking()
                 .SingleOrDefaultAsync(cancellationToken);
 
             return subscription == null

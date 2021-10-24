@@ -1,4 +1,5 @@
-﻿using System.Text.Json;
+﻿using System.Net.Mime;
+using System.Text.Json;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
@@ -27,7 +28,7 @@ namespace RecaptchaV3
                 context.Result = new ContentResult
                 {
                     Content = JsonSerializer.Serialize(new { message = $"{_headerName} has not been sent" }),
-                    ContentType = "application/json",
+                    ContentType = MediaTypeNames.Application.Json,
                     StatusCode = StatusCodes.Status428PreconditionRequired
                 };
                 return;
@@ -49,7 +50,7 @@ namespace RecaptchaV3
                 context.Result = new ContentResult
                 {
                     Content = JsonSerializer.Serialize(new { message = "Invalid ReCaptcha" }),
-                    ContentType = "application/json",
+                    ContentType = MediaTypeNames.Application.Json,
                     StatusCode = StatusCodes.Status428PreconditionRequired
                 };
 

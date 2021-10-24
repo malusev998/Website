@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using System.Net.Http;
+using System.Net.Mime;
 using System.Threading.Tasks;
 using Database;
 using Microsoft.AspNetCore.Hosting;
@@ -11,6 +12,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.Net.Http.Headers;
 using NodaTime;
 using NodaTime.Testing;
 using RecaptchaV3;
@@ -77,7 +79,7 @@ namespace DusanMalusev.Tests
                 {
                     builder.UseTestServer()
                         .UseStartup<Startup>();
-                    
+
                     builder.ConfigureTestServices(services =>
                     {
                         services.AddReCaptchaV3Testing();
@@ -85,7 +87,7 @@ namespace DusanMalusev.Tests
                             Instant.FromUtc(2021, 11, 11, 11, 00),
                             Duration.FromSeconds(1)
                         ));
-                        
+
                         var connectionString =
                             Configuration.GetConnectionString(Database.ServiceProvider.ConnectionStringKey) +
                             "Database=dusanmalusev_" + Random.NextInt64();
@@ -97,7 +99,6 @@ namespace DusanMalusev.Tests
                             Configuration.GetValue<int>("Postgres:MaxBatchSize")
                         );
                     });
-
                 })
                 .ConfigureLogging(logging =>
                 {
@@ -111,7 +112,7 @@ namespace DusanMalusev.Tests
             var headerName = Configuration.GetValue<string>("Google:ReCaptchaV3:HeaderName");
 
             base.ConfigureClient(client);
-            
+
             client.DefaultRequestHeaders.Add(headerName, new[] { "RecaptchaDummyToken" });
         }
 
@@ -119,20 +120,19 @@ namespace DusanMalusev.Tests
         {
             var cookieName = Configuration.GetValue<string>("CsrfCookieOptions:Name");
             var headerName = Configuration.GetValue<string>("CsrfCookieOptions:HeaderName");
-            
+
             var client = CreateClient();
             var testResult = await client.GetAsync("/csrf-token"); // the endpoint we created before
-            var cookies = testResult.Headers.GetValues("Set-Cookie").ToList();
+            var cookies = testResult.Headers.GetValues(HeaderNames.SetCookie).ToList();
 
             var token = cookies
                 .Single(x => x.StartsWith(cookieName))[$"{cookieName}=".Length..]
                 .Split(";")[0];
 
 
-            
-            client.DefaultRequestHeaders.Add("Accept", "application/json");
+            client.DefaultRequestHeaders.Add(HeaderNames.Accept, MediaTypeNames.Application.Json);
             client.DefaultRequestHeaders.Add(headerName, new[] { token });
-            client.DefaultRequestHeaders.Add("Cookie", cookies);
+            client.DefaultRequestHeaders.Add(HeaderNames.Cookie, cookies);
             return client;
         }
 
@@ -146,7 +146,7 @@ namespace DusanMalusev.Tests
 
             await context.Database.MigrateAsync();
         }
-        
+
 
         public new void Dispose()
         {

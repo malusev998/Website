@@ -39,6 +39,7 @@
     <PackageReference Include="Serilog.Formatting.Compact" Version="1.1.1-dev-00944" />
     <PackageReference Include="Serilog.Settings.Configuration" Version="3.3.0" />
     <PackageReference Include="Serilog.Sinks.Async" Version="1.5.0" />
+    <PackageReference Include="StrongGrid" Version="0.82.0" />
   </ItemGroup>
 
   <ItemGroup>
@@ -58,6 +59,13 @@
   <ItemGroup>
     <None Remove="certificate.pfx" />
     <Content Include="certificate.pfx" />
+    <None Remove="Controllers\Email\" />
+    <None Remove="SendGrid" />
+    <None Remove="SendGrid.Extensions.DependencyInjection" />
+    <None Remove="SendGrid.CSharp.HTTP.Client" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Controllers\Email\" />
+  </ItemGroup>
 </Project>
