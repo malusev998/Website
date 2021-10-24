@@ -44,7 +44,7 @@ restore:
 
 .PHONY: test
 test:
-	@ASPNETCORE_ENVIRONMENT=Testing dotnet test --no-restore --no-build --collect:"XPlat Code Coverage" /p:CollectCoverage=true /p:CoverletOutputFormat=opencover
+	@ASPNETCORE_ENVIRONMENT=Testing dotnet test --no-restore -c $(CONF) --no-build --collect:"XPlat Code Coverage" /p:CollectCoverage=true /p:CoverletOutputFormat=opencover
 
 .PHONY: drop
 drop:
