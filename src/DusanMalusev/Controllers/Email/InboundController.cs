@@ -32,7 +32,7 @@ namespace DusanMalusev.Controllers.Email
                 HttpContext.Request.Body.Seek(0, SeekOrigin.Begin);
                 var memoryStream = new MemoryStream(8192);
 
-                await body.CopyToAsync(memoryStream, cancellationToken);
+                body.CopyTo(memoryStream);
                 memoryStream.Position = 0;
                 var inboundEmail = await _parser.ParseInboundEmailWebhookAsync(memoryStream);
                 _logger.LogInformation("New Email...");
