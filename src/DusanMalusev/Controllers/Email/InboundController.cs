@@ -30,7 +30,6 @@ namespace DusanMalusev.Controllers.Email
             {
                 HttpContext.Request.EnableBuffering();
                 HttpContext.Request.Body.Seek(0, SeekOrigin.Begin);
-                body.Position = 0;
                 var memoryStream = new MemoryStream(8192);
 
                 await body.CopyToAsync(memoryStream, cancellationToken);
