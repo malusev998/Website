@@ -25,11 +25,15 @@ namespace DusanMalusev.Controllers.Email
         [Route("")]
         public async Task<IActionResult> AcceptIncomingEmail(CancellationToken cancellationToken)
         {
-            await using var body = Request.Body;
+            var body = Request.Body;
 
             try
             {
-                var inboundEmail = await _parser.ParseInboundEmailWebhookAsync(body);
+                var memoryStream = new MemoryStream((int)body.Length);
+
+                await body.CopyToAsync(memoryStream, cancellationToken);
+                memoryStream.Position = 0;
+                var inboundEmail = await _parser.ParseInboundEmailWebhookAsync(memoryStream);
                 _logger.LogInformation("New Email...");
             }
             catch (Exception e)
