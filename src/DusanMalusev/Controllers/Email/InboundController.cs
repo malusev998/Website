@@ -27,10 +27,17 @@ namespace DusanMalusev.Controllers.Email
         {
             await using var body = Request.Body;
 
-            var inboundEmail = await _parser.ParseInboundEmailWebhookAsync(body);
+            try
+            {
+                var inboundEmail = await _parser.ParseInboundEmailWebhookAsync(body);
+                _logger.LogInformation("New Email...");
+            }
+            catch (Exception e)
+            {
+                _logger.LogError("Exception: {E}, {Stack}", e.Message, e.StackTrace);
+            }
 
-            _logger.LogInformation("New Email...");
-            
+
             // _logger.LogInformation(
             //     "New Message: {Test}|{FromName} <{FromEmail}>|{SpamScore}|{SpamReport}|{SenderIp}|{Html}|{Subject}",
             //     inboundEmail.Text,
