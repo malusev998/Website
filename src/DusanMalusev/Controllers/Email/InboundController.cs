@@ -23,13 +23,13 @@ namespace DusanMalusev.Controllers.Email
 
         [HttpPost]
         [Route("")]
-        public async Task<IActionResult> AcceptIncomingEmail([FromBody] byte[] body,
-            CancellationToken cancellationToken)
+        public async Task<IActionResult> AcceptIncomingEmail()
         {
-            // var body = HttpContext.Request.Body;
             try
             {
-                var memoryStream = new MemoryStream(body);
+                var body = HttpContext.Request.Body;
+                var memoryStream = new MemoryStream();
+                await body.CopyToAsync(memoryStream);
                 memoryStream.Position = 0;
                 var inboundEmail = await _parser.ParseInboundEmailWebhookAsync(memoryStream);
                 _logger.LogInformation("New Email...");
