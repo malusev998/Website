@@ -32,25 +32,24 @@ namespace DusanMalusev.Controllers.Email
                 await body.CopyToAsync(memoryStream);
                 memoryStream.Position = 0;
                 var inboundEmail = await _parser.ParseInboundEmailWebhookAsync(memoryStream);
-                _logger.LogInformation("New Email...");
+
+                _logger.LogInformation(
+                    "New Message: {Test}|{FromName} <{FromEmail}>|{SpamScore}|{SpamReport}|{SenderIp}|{Html}|{Subject}",
+                    inboundEmail.Text,
+                    inboundEmail.From.Name,
+                    inboundEmail.From.Email,
+                    inboundEmail.SpamScore,
+                    inboundEmail.SpamReport,
+                    inboundEmail.SenderIp,
+                    inboundEmail.Html,
+                    inboundEmail.Subject
+                );
             }
             catch (Exception e)
             {
                 _logger.LogError("Exception: {E}, {Stack}", e.Message, e.StackTrace);
             }
 
-
-            // _logger.LogInformation(
-            //     "New Message: {Test}|{FromName} <{FromEmail}>|{SpamScore}|{SpamReport}|{SenderIp}|{Html}|{Subject}",
-            //     inboundEmail.Text,
-            //     inboundEmail.From.Name,
-            //     inboundEmail.From.Email,
-            //     inboundEmail.SpamScore,
-            //     inboundEmail.SpamReport,
-            //     inboundEmail.SenderIp,
-            //     inboundEmail.Html,
-            //     inboundEmail.Subject
-            // );
 
             return Ok();
         }
