@@ -29,7 +29,7 @@ namespace DusanMalusev.Controllers.Email
 
             try
             {
-                var memoryStream = new MemoryStream((int)body.Length);
+                var memoryStream = new MemoryStream(8192);
 
                 await body.CopyToAsync(memoryStream, cancellationToken);
                 memoryStream.Position = 0;
