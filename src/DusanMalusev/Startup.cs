@@ -19,6 +19,7 @@ using Repositories;
 using Serializers;
 using Serilog;
 using Sitemap;
+using StrongGrid;
 using Validators;
 
 namespace DusanMalusev
@@ -60,6 +61,8 @@ namespace DusanMalusev
                 .Bind(_configuration.GetSection("SendGrid"))
                 .ValidateDataAnnotations();
 
+            services.AddSingleton<WebhookParser>();
+            
             services.AddDataProtection()
                 .PersistKeysToFileSystem(new DirectoryInfo(_configuration["Keys:StoragePath"]))
                 .ProtectKeysWithCertificate(new X509Certificate2(
