@@ -28,18 +28,20 @@ namespace DusanMalusev.Controllers.Email
             await using var body = Request.Body;
 
             var inboundEmail = await _parser.ParseInboundEmailWebhookAsync(body);
+
+            _logger.LogInformation("New Email...");
             
-            _logger.LogInformation(
-                "New Message: {Test}|{FromName} <{FromEmail}>|{SpamScore}|{SpamReport}|{SenderIp}|{Html}|{Subject}",
-                inboundEmail.Text,
-                inboundEmail.From.Name,
-                inboundEmail.From.Email,
-                inboundEmail.SpamScore,
-                inboundEmail.SpamReport,
-                inboundEmail.SenderIp,
-                inboundEmail.Html,
-                inboundEmail.Subject
-            );
+            // _logger.LogInformation(
+            //     "New Message: {Test}|{FromName} <{FromEmail}>|{SpamScore}|{SpamReport}|{SenderIp}|{Html}|{Subject}",
+            //     inboundEmail.Text,
+            //     inboundEmail.From.Name,
+            //     inboundEmail.From.Email,
+            //     inboundEmail.SpamScore,
+            //     inboundEmail.SpamReport,
+            //     inboundEmail.SenderIp,
+            //     inboundEmail.Html,
+            //     inboundEmail.Subject
+            // );
 
             return Ok();
         }
