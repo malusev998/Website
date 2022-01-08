@@ -18,7 +18,7 @@ namespace RecaptchaV3
 
             var header = options.HeaderName;
 
-            return new ReCaptchaV3AuthorizationFilter(service, header, Threshold);
+            return new ReCaptchaV3AuthorizationFilter(service, header, Threshold ?? options.Threshold);
         }
     }
 }
